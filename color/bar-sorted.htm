@@ -1,0 +1,718 @@
+<!-- GPL(C) moshahmed_at_gmail.com --> <title> allcolors </title>
+
+
+<style>
+.bar { width: 20px; max-width: 20px; height: 20px; font-size: 18px;
+        display: inline-block; }
+.bar:hover {
+  transform: scale(1.5, 1.5);
+  cursor: crosshair;
+  opacity: .9;
+}
+#vim_demo {
+  border: 1px solid black;
+  width: 200px;
+}
+.bar3fb {
+    width:  200px;
+    border: 1px solid black;
+    display: inline-block;
+}
+.colorpicker5 {
+    width:  60px;
+}
+</style>
+
+<script>
+
+if (!String.format) { /* format is sprintf */
+  String.format = function(format) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return format.replace(/{(\d+)}/g, function(match, number) {
+      return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+      ;
+    });
+  };
+}
+
+function setname(name,rgb,fgbg) {
+  var show = name + ',' + rgb;
+  if(fgbg=='fg') {
+    document.getElementById('bar3f').innerHTML =show;
+  }else{
+    document.getElementById('bar3b').innerHTML =show;
+  }
+  var vim_demo = document.getElementById('vim_demo');
+  if(fgbg=='fg') {
+    vim_demo.style.color=rgb;
+  }else{
+    vim_demo.style.backgroundColor=rgb;
+  }
+}
+
+function set_color_both(obj,aclass,rgb,name,fgbg) {
+    setname(name,rgb,fgbg);
+    var elements = document.getElementsByClassName(aclass);
+    for (var i = 0; i < elements.length; i++) {
+        if(fgbg=='fg') {
+          elements[i].style.color=rgb;
+        }else{
+          elements[i].style.backgroundColor=rgb;
+        }
+    }
+}
+
+function set_color_xbox(obj,aclass,rgb,name,fgbg) {
+  set_color_both(obj,aclass,rgb,name,fgbg);
+  // update the html5 input boxes.
+  if(fgbg=='fg') {
+    document.getElementById('bar5f').value=rgb;
+  }else{
+    document.getElementById('bar5b').value=rgb;
+  }
+}
+
+function set_color_html5(obj,aclass,fgbg) {
+  var rgb = obj.value;
+  var rrggbb = rgb.replace('#','');
+  var name = rgb.replace('#',fgbg+'_');
+  set_color_both(obj,aclass,rgb,name,fgbg);
+  // setname(name,rgb,fgbg);
+}
+
+function vim_add() {
+  var bar3f = document.getElementById('bar3f').innerHTML;
+  var bar3b = document.getElementById('bar3b').innerHTML;
+  var bar3fx = bar3f.split(',');
+  var bar3bx = bar3b.split(',');
+
+  // <span style="color:red;background=green;">red_on_green</span>
+  var span_a_on_b = String.format(
+    '<span style="color:{0}; background-color:{1};">color_{2}_on_{3}</span>',
+    bar3fx[1], bar3bx[1], bar3fx[0], bar3bx[0]);
+
+  // hi red_on_green guifg=#fe3203 guibg=#209234
+  var hi_str = String.format('hi {0} guifg={1} guibg={2}<br />',
+    span_a_on_b, bar3fx[1], bar3bx[1]);
+
+  // syn match red_on_green /<(red_on_green)>/
+  var syn_str = String.format('syn match {0} /\\<\\({0}\\)\\>/<br />',
+    span_a_on_b, bar3fx[0], bar3bx[0]);
+
+  // prepend string (not += append), easier to see changes.
+  var div = document.getElementById('vim_colors');
+  div.innerHTML = hi_str + syn_str + div.innerHTML;
+}
+
+function vim_clear() {
+  var div = document.getElementById('vim_colors');
+  div.innerHTML = '';
+}
+
+</script>
+
+<x-html>
+
+<div id=bar>
+Pick background color: <span id=bar3b class=bar3fb>white,#fefefe</span>
+BG color picker:
+  <input id=bar5b type=color class=colorpicker5
+    onchange='set_color_html5(this, "bar2", "bg");'
+  />
+<div style='clear:both'></div>
+
+
+<span class="bar bar1" style='background:#ffff00;' title='bg:Yellow.Yellow,ffff00'
+onclick='set_color_xbox( this, "bar2", "#ffff00", "Yellow.Yellow", "bg" );'
+>&nbsp;X</span><!--1--><span class="bar bar1" style='background:#ffdab9;' title='bg:Yellow.Peach-Puff,ffdab9'
+onclick='set_color_xbox( this, "bar2", "#ffdab9", "Yellow.Peach-Puff", "bg" );'
+>&nbsp;X</span><!--2--><span class="bar bar1" style='background:#ffefd5;' title='bg:Yellow.Papaya-Whip,ffefd5'
+onclick='set_color_xbox( this, "bar2", "#ffefd5", "Yellow.Papaya-Whip", "bg" );'
+>&nbsp;X</span><!--3--><span class="bar bar1" style='background:#eee8aa;' title='bg:Yellow.Pale-Golden-Rod,eee8aa'
+onclick='set_color_xbox( this, "bar2", "#eee8aa", "Yellow.Pale-Golden-Rod", "bg" );'
+>&nbsp;X</span><!--4--><span class="bar bar1" style='background:#ffe4b5;' title='bg:Yellow.Moccasin,ffe4b5'
+onclick='set_color_xbox( this, "bar2", "#ffe4b5", "Yellow.Moccasin", "bg" );'
+>&nbsp;X</span><!--5--><span class="bar bar1" style='background:#ffffe0;' title='bg:Yellow.Light-Yellow,ffffe0'
+onclick='set_color_xbox( this, "bar2", "#ffffe0", "Yellow.Light-Yellow", "bg" );'
+>&nbsp;X</span><!--6--><span class="bar bar1" style='background:#fafad2;' title='bg:Yellow.Light-Golden-Rodyellow,fafad2'
+onclick='set_color_xbox( this, "bar2", "#fafad2", "Yellow.Light-Golden-Rodyellow", "bg" );'
+>&nbsp;X</span><!--7--><span class="bar bar1" style='background:#fffacd;' title='bg:Yellow.Lemon-Chiffon,fffacd'
+onclick='set_color_xbox( this, "bar2", "#fffacd", "Yellow.Lemon-Chiffon", "bg" );'
+>&nbsp;X</span><!--8--><span class="bar bar1" style='background:#f0e68c;' title='bg:Yellow.Khaki,f0e68c'
+onclick='set_color_xbox( this, "bar2", "#f0e68c", "Yellow.Khaki", "bg" );'
+>&nbsp;X</span><!--9--><span class="bar bar1" style='background:#ffd700;' title='bg:Yellow.Gold,ffd700'
+onclick='set_color_xbox( this, "bar2", "#ffd700", "Yellow.Gold", "bg" );'
+>&nbsp;X</span><!--10--><span class="bar bar1" style='background:#bdb76b;' title='bg:Yellow.Dark-Khaki,bdb76b'
+onclick='set_color_xbox( this, "bar2", "#bdb76b", "Yellow.Dark-Khaki", "bg" );'
+>&nbsp;X</span><!--11--><span class="bar bar1" style='background:#f5f5f5;' title='bg:White.White-Smoke,f5f5f5'
+onclick='set_color_xbox( this, "bar2", "#f5f5f5", "White.White-Smoke", "bg" );'
+>&nbsp;X</span><!--12--><span class="bar bar1" style='background:#ffffff;' title='bg:White.White,ffffff'
+onclick='set_color_xbox( this, "bar2", "#ffffff", "White.White", "bg" );'
+>&nbsp;X</span><!--13--><span class="bar bar1" style='background:#fffafa;' title='bg:White.Snow,fffafa'
+onclick='set_color_xbox( this, "bar2", "#fffafa", "White.Snow", "bg" );'
+>&nbsp;X</span><!--14--><span class="bar bar1" style='background:#fff5ee;' title='bg:White.Sea-Shell,fff5ee'
+onclick='set_color_xbox( this, "bar2", "#fff5ee", "White.Sea-Shell", "bg" );'
+>&nbsp;X</span><!--15--><span class="bar bar1" style='background:#fdf5e6;' title='bg:White.Old-Lace,fdf5e6'
+onclick='set_color_xbox( this, "bar2", "#fdf5e6", "White.Old-Lace", "bg" );'
+>&nbsp;X</span><!--16--><span class="bar bar1" style='background:#ffe4e1;' title='bg:White.Misty-Rose,ffe4e1'
+onclick='set_color_xbox( this, "bar2", "#ffe4e1", "White.Misty-Rose", "bg" );'
+>&nbsp;X</span><!--17--><span class="bar bar1" style='background:#f5fffa;' title='bg:White.Mint-Cream,f5fffa'
+onclick='set_color_xbox( this, "bar2", "#f5fffa", "White.Mint-Cream", "bg" );'
+>&nbsp;X</span><!--18--><span class="bar bar1" style='background:#faf0e6;' title='bg:White.Linen,faf0e6'
+onclick='set_color_xbox( this, "bar2", "#faf0e6", "White.Linen", "bg" );'
+>&nbsp;X</span><!--19--><span class="bar bar1" style='background:#fff0f5;' title='bg:White.Lavender-Blush,fff0f5'
+onclick='set_color_xbox( this, "bar2", "#fff0f5", "White.Lavender-Blush", "bg" );'
+>&nbsp;X</span><!--20--><span class="bar bar1" style='background:#fffff0;' title='bg:White.Ivory,fffff0'
+onclick='set_color_xbox( this, "bar2", "#fffff0", "White.Ivory", "bg" );'
+>&nbsp;X</span><!--21--><span class="bar bar1" style='background:#f0fff0;' title='bg:White.Honey-Dew,f0fff0'
+onclick='set_color_xbox( this, "bar2", "#f0fff0", "White.Honey-Dew", "bg" );'
+>&nbsp;X</span><!--22--><span class="bar bar1" style='background:#f8f8ff;' title='bg:White.Ghost-White,f8f8ff'
+onclick='set_color_xbox( this, "bar2", "#f8f8ff", "White.Ghost-White", "bg" );'
+>&nbsp;X</span><!--23--><span class="bar bar1" style='background:#fffaf0;' title='bg:White.Floral-White,fffaf0'
+onclick='set_color_xbox( this, "bar2", "#fffaf0", "White.Floral-White", "bg" );'
+>&nbsp;X</span><!--24--><span class="bar bar1" style='background:#f5f5dc;' title='bg:White.Beige,f5f5dc'
+onclick='set_color_xbox( this, "bar2", "#f5f5dc", "White.Beige", "bg" );'
+>&nbsp;X</span><!--25--><span class="bar bar1" style='background:#f0ffff;' title='bg:White.Azure,f0ffff'
+onclick='set_color_xbox( this, "bar2", "#f0ffff", "White.Azure", "bg" );'
+>&nbsp;X</span><!--26--><span class="bar bar1" style='background:#faebd7;' title='bg:White.Antique-White,faebd7'
+onclick='set_color_xbox( this, "bar2", "#faebd7", "White.Antique-White", "bg" );'
+>&nbsp;X</span><!--27--><span class="bar bar1" style='background:#f0f8ff;' title='bg:White.Alice-Blue,f0f8ff'
+onclick='set_color_xbox( this, "bar2", "#f0f8ff", "White.Alice-Blue", "bg" );'
+>&nbsp;X</span><!--28--><span class="bar bar1" style='background:#fa8072;' title='bg:Red.Salmon,fa8072'
+onclick='set_color_xbox( this, "bar2", "#fa8072", "Red.Salmon", "bg" );'
+>&nbsp;X</span><!--29--><span class="bar bar1" style='background:#ff0000;' title='bg:Red.Red,ff0000'
+onclick='set_color_xbox( this, "bar2", "#ff0000", "Red.Red", "bg" );'
+>&nbsp;X</span><!--30--><span class="bar bar1" style='background:#f08080;' title='bg:Red.Light-Coral,f08080'
+onclick='set_color_xbox( this, "bar2", "#f08080", "Red.Light-Coral", "bg" );'
+>&nbsp;X</span><!--31--><span class="bar bar1" style='background:#cd5c5c;' title='bg:Red.Indian-Red,cd5c5c'
+onclick='set_color_xbox( this, "bar2", "#cd5c5c", "Red.Indian-Red", "bg" );'
+>&nbsp;X</span><!--32--><span class="bar bar1" style='background:#b22222;' title='bg:Red.Fire-Brick,b22222'
+onclick='set_color_xbox( this, "bar2", "#b22222", "Red.Fire-Brick", "bg" );'
+>&nbsp;X</span><!--33--><span class="bar bar1" style='background:#e9967a;' title='bg:Red.Dark-Salmon,e9967a'
+onclick='set_color_xbox( this, "bar2", "#e9967a", "Red.Dark-Salmon", "bg" );'
+>&nbsp;X</span><!--34--><span class="bar bar1" style='background:#8b0000;' title='bg:Red.Dark-Red,8b0000'
+onclick='set_color_xbox( this, "bar2", "#8b0000", "Red.Dark-Red", "bg" );'
+>&nbsp;X</span><!--35--><span class="bar bar1" style='background:#dc143c;' title='bg:Red.Crimson,dc143c'
+onclick='set_color_xbox( this, "bar2", "#dc143c", "Red.Crimson", "bg" );'
+>&nbsp;X</span><!--36--><span class="bar bar1" style='background:#ee82ee;' title='bg:Purple.Violet,ee82ee'
+onclick='set_color_xbox( this, "bar2", "#ee82ee", "Purple.Violet", "bg" );'
+>&nbsp;X</span><!--37--><span class="bar bar1" style='background:#d8bfd8;' title='bg:Purple.Thistle,d8bfd8'
+onclick='set_color_xbox( this, "bar2", "#d8bfd8", "Purple.Thistle", "bg" );'
+>&nbsp;X</span><!--38--><span class="bar bar1" style='background:#6a5acd;' title='bg:Purple.Slate-Blue,6a5acd'
+onclick='set_color_xbox( this, "bar2", "#6a5acd", "Purple.Slate-Blue", "bg" );'
+>&nbsp;X</span><!--39--><span class="bar bar1" style='background:#663399;' title='bg:Purple.Rebecca-Purple,663399'
+onclick='set_color_xbox( this, "bar2", "#663399", "Purple.Rebecca-Purple", "bg" );'
+>&nbsp;X</span><!--40--><span class="bar bar1" style='background:#800080;' title='bg:Purple.Purple,800080'
+onclick='set_color_xbox( this, "bar2", "#800080", "Purple.Purple", "bg" );'
+>&nbsp;X</span><!--41--><span class="bar bar1" style='background:#dda0dd;' title='bg:Purple.Plum,dda0dd'
+onclick='set_color_xbox( this, "bar2", "#dda0dd", "Purple.Plum", "bg" );'
+>&nbsp;X</span><!--42--><span class="bar bar1" style='background:#da70d6;' title='bg:Purple.Orchid,da70d6'
+onclick='set_color_xbox( this, "bar2", "#da70d6", "Purple.Orchid", "bg" );'
+>&nbsp;X</span><!--43--><span class="bar bar1" style='background:#9370db;' title='bg:Purple.Medium-Purple,9370db'
+onclick='set_color_xbox( this, "bar2", "#9370db", "Purple.Medium-Purple", "bg" );'
+>&nbsp;X</span><!--44--><span class="bar bar1" style='background:#ba55d3;' title='bg:Purple.Medium-Orchid,ba55d3'
+onclick='set_color_xbox( this, "bar2", "#ba55d3", "Purple.Medium-Orchid", "bg" );'
+>&nbsp;X</span><!--45--><span class="bar bar1" style='background:#ff00ff;' title='bg:Purple.Magenta,ff00ff'
+onclick='set_color_xbox( this, "bar2", "#ff00ff", "Purple.Magenta", "bg" );'
+>&nbsp;X</span><!--46--><span class="bar bar1" style='background:#e6e6fa;' title='bg:Purple.Lavender,e6e6fa'
+onclick='set_color_xbox( this, "bar2", "#e6e6fa", "Purple.Lavender", "bg" );'
+>&nbsp;X</span><!--47--><span class="bar bar1" style='background:#4b0082;' title='bg:Purple.Indigo,4b0082'
+onclick='set_color_xbox( this, "bar2", "#4b0082", "Purple.Indigo", "bg" );'
+>&nbsp;X</span><!--48--><span class="bar bar1" style='background:#9400d3;' title='bg:Purple.Dark-Violet,9400d3'
+onclick='set_color_xbox( this, "bar2", "#9400d3", "Purple.Dark-Violet", "bg" );'
+>&nbsp;X</span><!--49--><span class="bar bar1" style='background:#483d8b;' title='bg:Purple.Dark-Slateblue,483d8b'
+onclick='set_color_xbox( this, "bar2", "#483d8b", "Purple.Dark-Slateblue", "bg" );'
+>&nbsp;X</span><!--50--><span class="bar bar1" style='background:#9932cc;' title='bg:Purple.Dark-Orchid,9932cc'
+onclick='set_color_xbox( this, "bar2", "#9932cc", "Purple.Dark-Orchid", "bg" );'
+>&nbsp;X</span><!--51--><span class="bar bar1" style='background:#8b008b;' title='bg:Purple.Dark-Magenta,8b008b'
+onclick='set_color_xbox( this, "bar2", "#8b008b", "Purple.Dark-Magenta", "bg" );'
+>&nbsp;X</span><!--52--><span class="bar bar1" style='background:#8a2be2;' title='bg:Purple.Blue-Violet,8a2be2'
+onclick='set_color_xbox( this, "bar2", "#8a2be2", "Purple.Blue-Violet", "bg" );'
+>&nbsp;X</span><!--53--><span class="bar bar1" style='background:#ffc0cb;' title='bg:Pink.Pink,ffc0cb'
+onclick='set_color_xbox( this, "bar2", "#ffc0cb", "Pink.Pink", "bg" );'
+>&nbsp;X</span><!--54--><span class="bar bar1" style='background:#db7093;' title='bg:Pink.Pale-Violet-Red,db7093'
+onclick='set_color_xbox( this, "bar2", "#db7093", "Pink.Pale-Violet-Red", "bg" );'
+>&nbsp;X</span><!--55--><span class="bar bar1" style='background:#c71585;' title='bg:Pink.Medium-Violetred,c71585'
+onclick='set_color_xbox( this, "bar2", "#c71585", "Pink.Medium-Violetred", "bg" );'
+>&nbsp;X</span><!--56--><span class="bar bar1" style='background:#ffb6c1;' title='bg:Pink.Light-Pink,ffb6c1'
+onclick='set_color_xbox( this, "bar2", "#ffb6c1", "Pink.Light-Pink", "bg" );'
+>&nbsp;X</span><!--57--><span class="bar bar1" style='background:#ff69b4;' title='bg:Pink.Hot-Pink,ff69b4'
+onclick='set_color_xbox( this, "bar2", "#ff69b4", "Pink.Hot-Pink", "bg" );'
+>&nbsp;X</span><!--58--><span class="bar bar1" style='background:#ff1493;' title='bg:Pink.Deep-Pink,ff1493'
+onclick='set_color_xbox( this, "bar2", "#ff1493", "Pink.Deep-Pink", "bg" );'
+>&nbsp;X</span><!--59--><span class="bar bar1" style='background:#ff6347;' title='bg:Orange.Tomato,ff6347'
+onclick='set_color_xbox( this, "bar2", "#ff6347", "Orange.Tomato", "bg" );'
+>&nbsp;X</span><!--60--><span class="bar bar1" style='background:#ff4500;' title='bg:Orange.Orange-Red,ff4500'
+onclick='set_color_xbox( this, "bar2", "#ff4500", "Orange.Orange-Red", "bg" );'
+>&nbsp;X</span><!--61--><span class="bar bar1" style='background:#ffa500;' title='bg:Orange.Orange,ffa500'
+onclick='set_color_xbox( this, "bar2", "#ffa500", "Orange.Orange", "bg" );'
+>&nbsp;X</span><!--62--><span class="bar bar1" style='background:#ffa07a;' title='bg:Orange.Light-Salmon,ffa07a'
+onclick='set_color_xbox( this, "bar2", "#ffa07a", "Orange.Light-Salmon", "bg" );'
+>&nbsp;X</span><!--63--><span class="bar bar1" style='background:#ff8c00;' title='bg:Orange.Dark-Orange,ff8c00'
+onclick='set_color_xbox( this, "bar2", "#ff8c00", "Orange.Dark-Orange", "bg" );'
+>&nbsp;X</span><!--64--><span class="bar bar1" style='background:#ff7f50;' title='bg:Orange.Coral,ff7f50'
+onclick='set_color_xbox( this, "bar2", "#ff7f50", "Orange.Coral", "bg" );'
+>&nbsp;X</span><!--65--><span class="bar bar1" style='background:#9acd32;' title='bg:Green.Yellow-Green,9acd32'
+onclick='set_color_xbox( this, "bar2", "#9acd32", "Green.Yellow-Green", "bg" );'
+>&nbsp;X</span><!--66--><span class="bar bar1" style='background:#008080;' title='bg:Green.Teal,008080'
+onclick='set_color_xbox( this, "bar2", "#008080", "Green.Teal", "bg" );'
+>&nbsp;X</span><!--67--><span class="bar bar1" style='background:#00ff7f;' title='bg:Green.Spring-Green,00ff7f'
+onclick='set_color_xbox( this, "bar2", "#00ff7f", "Green.Spring-Green", "bg" );'
+>&nbsp;X</span><!--68--><span class="bar bar1" style='background:#2e8b57;' title='bg:Green.Sea-Green,2e8b57'
+onclick='set_color_xbox( this, "bar2", "#2e8b57", "Green.Sea-Green", "bg" );'
+>&nbsp;X</span><!--69--><span class="bar bar1" style='background:#98fb98;' title='bg:Green.Pale-Green,98fb98'
+onclick='set_color_xbox( this, "bar2", "#98fb98", "Green.Pale-Green", "bg" );'
+>&nbsp;X</span><!--70--><span class="bar bar1" style='background:#6b8e23;' title='bg:Green.Olive-Drab,6b8e23'
+onclick='set_color_xbox( this, "bar2", "#6b8e23", "Green.Olive-Drab", "bg" );'
+>&nbsp;X</span><!--71--><span class="bar bar1" style='background:#808000;' title='bg:Green.Olive,808000'
+onclick='set_color_xbox( this, "bar2", "#808000", "Green.Olive", "bg" );'
+>&nbsp;X</span><!--72--><span class="bar bar1" style='background:#00fa9a;' title='bg:Green.Medium-Spring-Green,00fa9a'
+onclick='set_color_xbox( this, "bar2", "#00fa9a", "Green.Medium-Spring-Green", "bg" );'
+>&nbsp;X</span><!--73--><span class="bar bar1" style='background:#3cb371;' title='bg:Green.Medium-Sea-Green,3cb371'
+onclick='set_color_xbox( this, "bar2", "#3cb371", "Green.Medium-Sea-Green", "bg" );'
+>&nbsp;X</span><!--74--><span class="bar bar1" style='background:#66cdaa;' title='bg:Green.Medium-Aqua-Marine,66cdaa'
+onclick='set_color_xbox( this, "bar2", "#66cdaa", "Green.Medium-Aqua-Marine", "bg" );'
+>&nbsp;X</span><!--75--><span class="bar bar1" style='background:#32cd32;' title='bg:Green.Lime-Green,32cd32'
+onclick='set_color_xbox( this, "bar2", "#32cd32", "Green.Lime-Green", "bg" );'
+>&nbsp;X</span><!--76--><span class="bar bar1" style='background:#00ff00;' title='bg:Green.Lime,00ff00'
+onclick='set_color_xbox( this, "bar2", "#00ff00", "Green.Lime", "bg" );'
+>&nbsp;X</span><!--77--><span class="bar bar1" style='background:#20b2aa;' title='bg:Green.Light-Sea-Green,20b2aa'
+onclick='set_color_xbox( this, "bar2", "#20b2aa", "Green.Light-Sea-Green", "bg" );'
+>&nbsp;X</span><!--78--><span class="bar bar1" style='background:#90ee90;' title='bg:Green.Light-Green,90ee90'
+onclick='set_color_xbox( this, "bar2", "#90ee90", "Green.Light-Green", "bg" );'
+>&nbsp;X</span><!--79--><span class="bar bar1" style='background:#7cfc00;' title='bg:Green.Lawn-Green,7cfc00'
+onclick='set_color_xbox( this, "bar2", "#7cfc00", "Green.Lawn-Green", "bg" );'
+>&nbsp;X</span><!--80--><span class="bar bar1" style='background:#adff2f;' title='bg:Green.Green-Yellow,adff2f'
+onclick='set_color_xbox( this, "bar2", "#adff2f", "Green.Green-Yellow", "bg" );'
+>&nbsp;X</span><!--81--><span class="bar bar1" style='background:#008000;' title='bg:Green.Green,008000'
+onclick='set_color_xbox( this, "bar2", "#008000", "Green.Green", "bg" );'
+>&nbsp;X</span><!--82--><span class="bar bar1" style='background:#228b22;' title='bg:Green.Forest-Green,228b22'
+onclick='set_color_xbox( this, "bar2", "#228b22", "Green.Forest-Green", "bg" );'
+>&nbsp;X</span><!--83--><span class="bar bar1" style='background:#8fbc8b;' title='bg:Green.Dark-Sea-Green,8fbc8b'
+onclick='set_color_xbox( this, "bar2", "#8fbc8b", "Green.Dark-Sea-Green", "bg" );'
+>&nbsp;X</span><!--84--><span class="bar bar1" style='background:#556b2f;' title='bg:Green.Dark-Olive-Green,556b2f'
+onclick='set_color_xbox( this, "bar2", "#556b2f", "Green.Dark-Olive-Green", "bg" );'
+>&nbsp;X</span><!--85--><span class="bar bar1" style='background:#006400;' title='bg:Green.Dark-Green,006400'
+onclick='set_color_xbox( this, "bar2", "#006400", "Green.Dark-Green", "bg" );'
+>&nbsp;X</span><!--86--><span class="bar bar1" style='background:#008b8b;' title='bg:Green.Dark-Cyan,008b8b'
+onclick='set_color_xbox( this, "bar2", "#008b8b", "Green.Dark-Cyan", "bg" );'
+>&nbsp;X</span><!--87--><span class="bar bar1" style='background:#7fff00;' title='bg:Green.Chartreuse,7fff00'
+onclick='set_color_xbox( this, "bar2", "#7fff00", "Green.Chartreuse", "bg" );'
+>&nbsp;X</span><!--88--><span class="bar bar1" style='background:#708090;' title='bg:Gray.Slate-Gray,708090'
+onclick='set_color_xbox( this, "bar2", "#708090", "Gray.Slate-Gray", "bg" );'
+>&nbsp;X</span><!--89--><span class="bar bar1" style='background:#c0c0c0;' title='bg:Gray.Silver,c0c0c0'
+onclick='set_color_xbox( this, "bar2", "#c0c0c0", "Gray.Silver", "bg" );'
+>&nbsp;X</span><!--90--><span class="bar bar1" style='background:#778899;' title='bg:Gray.Light-Slate-Gray,778899'
+onclick='set_color_xbox( this, "bar2", "#778899", "Gray.Light-Slate-Gray", "bg" );'
+>&nbsp;X</span><!--91--><span class="bar bar1" style='background:#d3d3d3;' title='bg:Gray.Light-Gray,d3d3d3'
+onclick='set_color_xbox( this, "bar2", "#d3d3d3", "Gray.Light-Gray", "bg" );'
+>&nbsp;X</span><!--92--><span class="bar bar1" style='background:#808080;' title='bg:Gray.Gray,808080'
+onclick='set_color_xbox( this, "bar2", "#808080", "Gray.Gray", "bg" );'
+>&nbsp;X</span><!--93--><span class="bar bar1" style='background:#dcdcdc;' title='bg:Gray.Gainsboro,dcdcdc'
+onclick='set_color_xbox( this, "bar2", "#dcdcdc", "Gray.Gainsboro", "bg" );'
+>&nbsp;X</span><!--94--><span class="bar bar1" style='background:#696969;' title='bg:Gray.Dim-Gray,696969'
+onclick='set_color_xbox( this, "bar2", "#696969", "Gray.Dim-Gray", "bg" );'
+>&nbsp;X</span><!--95--><span class="bar bar1" style='background:#2f4f4f;' title='bg:Gray.Dark-Slate-Gray,2f4f4f'
+onclick='set_color_xbox( this, "bar2", "#2f4f4f", "Gray.Dark-Slate-Gray", "bg" );'
+>&nbsp;X</span><!--96--><span class="bar bar1" style='background:#a9a9a9;' title='bg:Gray.Dark-Gray,a9a9a9'
+onclick='set_color_xbox( this, "bar2", "#a9a9a9", "Gray.Dark-Gray", "bg" );'
+>&nbsp;X</span><!--97--><span class="bar bar1" style='background:#000000;' title='bg:Gray.Black,000000'
+onclick='set_color_xbox( this, "bar2", "#000000", "Gray.Black", "bg" );'
+>&nbsp;X</span><!--98--><span class="bar bar1" style='background:#f5deb3;' title='bg:Brown.Wheat,f5deb3'
+onclick='set_color_xbox( this, "bar2", "#f5deb3", "Brown.Wheat", "bg" );'
+>&nbsp;X</span><!--99--><span class="bar bar1" style='background:#d2b48c;' title='bg:Brown.Tan,d2b48c'
+onclick='set_color_xbox( this, "bar2", "#d2b48c", "Brown.Tan", "bg" );'
+>&nbsp;X</span><!--100--><span class="bar bar1" style='background:#a0522d;' title='bg:Brown.Sienna,a0522d'
+onclick='set_color_xbox( this, "bar2", "#a0522d", "Brown.Sienna", "bg" );'
+>&nbsp;X</span><!--101--><span class="bar bar1" style='background:#f4a460;' title='bg:Brown.Sandy-Brown,f4a460'
+onclick='set_color_xbox( this, "bar2", "#f4a460", "Brown.Sandy-Brown", "bg" );'
+>&nbsp;X</span><!--102--><span class="bar bar1" style='background:#8b4513;' title='bg:Brown.Saddle-Brown,8b4513'
+onclick='set_color_xbox( this, "bar2", "#8b4513", "Brown.Saddle-Brown", "bg" );'
+>&nbsp;X</span><!--103--><span class="bar bar1" style='background:#bc8f8f;' title='bg:Brown.Rosy-Brown,bc8f8f'
+onclick='set_color_xbox( this, "bar2", "#bc8f8f", "Brown.Rosy-Brown", "bg" );'
+>&nbsp;X</span><!--104--><span class="bar bar1" style='background:#cd853f;' title='bg:Brown.Peru,cd853f'
+onclick='set_color_xbox( this, "bar2", "#cd853f", "Brown.Peru", "bg" );'
+>&nbsp;X</span><!--105--><span class="bar bar1" style='background:#ffdead;' title='bg:Brown.Navajo-White,ffdead'
+onclick='set_color_xbox( this, "bar2", "#ffdead", "Brown.Navajo-White", "bg" );'
+>&nbsp;X</span><!--106--><span class="bar bar1" style='background:#800000;' title='bg:Brown.Maroon,800000'
+onclick='set_color_xbox( this, "bar2", "#800000", "Brown.Maroon", "bg" );'
+>&nbsp;X</span><!--107--><span class="bar bar1" style='background:#daa520;' title='bg:Brown.Golden-Rod,daa520'
+onclick='set_color_xbox( this, "bar2", "#daa520", "Brown.Golden-Rod", "bg" );'
+>&nbsp;X</span><!--108--><span class="bar bar1" style='background:#b8860b;' title='bg:Brown.Dark-Golden-Rod,b8860b'
+onclick='set_color_xbox( this, "bar2", "#b8860b", "Brown.Dark-Golden-Rod", "bg" );'
+>&nbsp;X</span><!--109--><span class="bar bar1" style='background:#fff8dc;' title='bg:Brown.Corn-Silk,fff8dc'
+onclick='set_color_xbox( this, "bar2", "#fff8dc", "Brown.Corn-Silk", "bg" );'
+>&nbsp;X</span><!--110--><span class="bar bar1" style='background:#d2691e;' title='bg:Brown.Chocolate,d2691e'
+onclick='set_color_xbox( this, "bar2", "#d2691e", "Brown.Chocolate", "bg" );'
+>&nbsp;X</span><!--111--><span class="bar bar1" style='background:#deb887;' title='bg:Brown.Burly-Wood,deb887'
+onclick='set_color_xbox( this, "bar2", "#deb887", "Brown.Burly-Wood", "bg" );'
+>&nbsp;X</span><!--112--><span class="bar bar1" style='background:#a52a2a;' title='bg:Brown.Brown,a52a2a'
+onclick='set_color_xbox( this, "bar2", "#a52a2a", "Brown.Brown", "bg" );'
+>&nbsp;X</span><!--113--><span class="bar bar1" style='background:#ffebcd;' title='bg:Brown.Blanched-Almond,ffebcd'
+onclick='set_color_xbox( this, "bar2", "#ffebcd", "Brown.Blanched-Almond", "bg" );'
+>&nbsp;X</span><!--114--><span class="bar bar1" style='background:#ffe4c4;' title='bg:Brown.Bisque,ffe4c4'
+onclick='set_color_xbox( this, "bar2", "#ffe4c4", "Brown.Bisque", "bg" );'
+>&nbsp;X</span><!--115--><span class="bar bar1" style='background:#40e0d0;' title='bg:Blue.Turquoise,40e0d0'
+onclick='set_color_xbox( this, "bar2", "#40e0d0", "Blue.Turquoise", "bg" );'
+>&nbsp;X</span><!--116--><span class="bar bar1" style='background:#4682b4;' title='bg:Blue.Steel-Blue,4682b4'
+onclick='set_color_xbox( this, "bar2", "#4682b4", "Blue.Steel-Blue", "bg" );'
+>&nbsp;X</span><!--117--><span class="bar bar1" style='background:#87ceeb;' title='bg:Blue.Sky-Blue,87ceeb'
+onclick='set_color_xbox( this, "bar2", "#87ceeb", "Blue.Sky-Blue", "bg" );'
+>&nbsp;X</span><!--118--><span class="bar bar1" style='background:#4169e1;' title='bg:Blue.Royal-Blue,4169e1'
+onclick='set_color_xbox( this, "bar2", "#4169e1", "Blue.Royal-Blue", "bg" );'
+>&nbsp;X</span><!--119--><span class="bar bar1" style='background:#b0e0e6;' title='bg:Blue.Powder-Blue,b0e0e6'
+onclick='set_color_xbox( this, "bar2", "#b0e0e6", "Blue.Powder-Blue", "bg" );'
+>&nbsp;X</span><!--120--><span class="bar bar1" style='background:#afeeee;' title='bg:Blue.Pale-Turquoise,afeeee'
+onclick='set_color_xbox( this, "bar2", "#afeeee", "Blue.Pale-Turquoise", "bg" );'
+>&nbsp;X</span><!--121--><span class="bar bar1" style='background:#000080;' title='bg:Blue.Navy,000080'
+onclick='set_color_xbox( this, "bar2", "#000080", "Blue.Navy", "bg" );'
+>&nbsp;X</span><!--122--><span class="bar bar1" style='background:#191970;' title='bg:Blue.Midnight-Blue,191970'
+onclick='set_color_xbox( this, "bar2", "#191970", "Blue.Midnight-Blue", "bg" );'
+>&nbsp;X</span><!--123--><span class="bar bar1" style='background:#48d1cc;' title='bg:Blue.Medium-Turquoise,48d1cc'
+onclick='set_color_xbox( this, "bar2", "#48d1cc", "Blue.Medium-Turquoise", "bg" );'
+>&nbsp;X</span><!--124--><span class="bar bar1" style='background:#7b68ee;' title='bg:Blue.Medium-Slate-Blue,7b68ee'
+onclick='set_color_xbox( this, "bar2", "#7b68ee", "Blue.Medium-Slate-Blue", "bg" );'
+>&nbsp;X</span><!--125--><span class="bar bar1" style='background:#0000cd;' title='bg:Blue.Medium-Blue,0000cd'
+onclick='set_color_xbox( this, "bar2", "#0000cd", "Blue.Medium-Blue", "bg" );'
+>&nbsp;X</span><!--126--><span class="bar bar1" style='background:#b0c4de;' title='bg:Blue.Light-Steel-Blue,b0c4de'
+onclick='set_color_xbox( this, "bar2", "#b0c4de", "Blue.Light-Steel-Blue", "bg" );'
+>&nbsp;X</span><!--127--><span class="bar bar1" style='background:#87cefa;' title='bg:Blue.Light-Sky-Blue,87cefa'
+onclick='set_color_xbox( this, "bar2", "#87cefa", "Blue.Light-Sky-Blue", "bg" );'
+>&nbsp;X</span><!--128--><span class="bar bar1" style='background:#e0ffff;' title='bg:Blue.Light-Cyan,e0ffff'
+onclick='set_color_xbox( this, "bar2", "#e0ffff", "Blue.Light-Cyan", "bg" );'
+>&nbsp;X</span><!--129--><span class="bar bar1" style='background:#add8e6;' title='bg:Blue.Light-Blue,add8e6'
+onclick='set_color_xbox( this, "bar2", "#add8e6", "Blue.Light-Blue", "bg" );'
+>&nbsp;X</span><!--130--><span class="bar bar1" style='background:#1e90ff;' title='bg:Blue.Dodger-Blue,1e90ff'
+onclick='set_color_xbox( this, "bar2", "#1e90ff", "Blue.Dodger-Blue", "bg" );'
+>&nbsp;X</span><!--131--><span class="bar bar1" style='background:#00bfff;' title='bg:Blue.Deep-Sky-Blue,00bfff'
+onclick='set_color_xbox( this, "bar2", "#00bfff", "Blue.Deep-Sky-Blue", "bg" );'
+>&nbsp;X</span><!--132--><span class="bar bar1" style='background:#00ced1;' title='bg:Blue.Dark-Turquoise,00ced1'
+onclick='set_color_xbox( this, "bar2", "#00ced1", "Blue.Dark-Turquoise", "bg" );'
+>&nbsp;X</span><!--133--><span class="bar bar1" style='background:#00008b;' title='bg:Blue.Dark-Blue,00008b'
+onclick='set_color_xbox( this, "bar2", "#00008b", "Blue.Dark-Blue", "bg" );'
+>&nbsp;X</span><!--134--><span class="bar bar1" style='background:#00ffff;' title='bg:Blue.Cyan,00ffff'
+onclick='set_color_xbox( this, "bar2", "#00ffff", "Blue.Cyan", "bg" );'
+>&nbsp;X</span><!--135--><span class="bar bar1" style='background:#6495ed;' title='bg:Blue.Corn-Flower-Blue,6495ed'
+onclick='set_color_xbox( this, "bar2", "#6495ed", "Blue.Corn-Flower-Blue", "bg" );'
+>&nbsp;X</span><!--136--><span class="bar bar1" style='background:#5f9ea0;' title='bg:Blue.Cadet-Blue,5f9ea0'
+onclick='set_color_xbox( this, "bar2", "#5f9ea0", "Blue.Cadet-Blue", "bg" );'
+>&nbsp;X</span><!--137--><span class="bar bar1" style='background:#0000ff;' title='bg:Blue.Blue,0000ff'
+onclick='set_color_xbox( this, "bar2", "#0000ff", "Blue.Blue", "bg" );'
+>&nbsp;X</span><!--138--><span class="bar bar1" style='background:#7fffd4;' title='bg:Blue.Aqua-Marine,7fffd4'
+onclick='set_color_xbox( this, "bar2", "#7fffd4", "Blue.Aqua-Marine", "bg" );'
+>&nbsp;X</span><!--139--><div style='clear:both'></div>
+
+
+
+      Pick foreground color: <span id=bar3f class=bar3fb>black,#010101</span>
+      FG color picker
+        <input id=bar5f type=color class=colorpicker5
+        onchange='set_color_html5(this, "bar1", "fg");'
+        />
+      <div style='clear:both'></div>
+
+
+<span class="bar bar2" style='color:#ffff00;' title='fg:Yellow.Yellow,ffff00'
+onclick='set_color_xbox( this, "bar1", "#ffff00", "Yellow.Yellow", "fg" );'
+>&nbsp;X</span><!--140--><span class="bar bar2" style='color:#ffdab9;' title='fg:Yellow.Peach-Puff,ffdab9'
+onclick='set_color_xbox( this, "bar1", "#ffdab9", "Yellow.Peach-Puff", "fg" );'
+>&nbsp;X</span><!--141--><span class="bar bar2" style='color:#ffefd5;' title='fg:Yellow.Papaya-Whip,ffefd5'
+onclick='set_color_xbox( this, "bar1", "#ffefd5", "Yellow.Papaya-Whip", "fg" );'
+>&nbsp;X</span><!--142--><span class="bar bar2" style='color:#eee8aa;' title='fg:Yellow.Pale-Golden-Rod,eee8aa'
+onclick='set_color_xbox( this, "bar1", "#eee8aa", "Yellow.Pale-Golden-Rod", "fg" );'
+>&nbsp;X</span><!--143--><span class="bar bar2" style='color:#ffe4b5;' title='fg:Yellow.Moccasin,ffe4b5'
+onclick='set_color_xbox( this, "bar1", "#ffe4b5", "Yellow.Moccasin", "fg" );'
+>&nbsp;X</span><!--144--><span class="bar bar2" style='color:#ffffe0;' title='fg:Yellow.Light-Yellow,ffffe0'
+onclick='set_color_xbox( this, "bar1", "#ffffe0", "Yellow.Light-Yellow", "fg" );'
+>&nbsp;X</span><!--145--><span class="bar bar2" style='color:#fafad2;' title='fg:Yellow.Light-Golden-Rodyellow,fafad2'
+onclick='set_color_xbox( this, "bar1", "#fafad2", "Yellow.Light-Golden-Rodyellow", "fg" );'
+>&nbsp;X</span><!--146--><span class="bar bar2" style='color:#fffacd;' title='fg:Yellow.Lemon-Chiffon,fffacd'
+onclick='set_color_xbox( this, "bar1", "#fffacd", "Yellow.Lemon-Chiffon", "fg" );'
+>&nbsp;X</span><!--147--><span class="bar bar2" style='color:#f0e68c;' title='fg:Yellow.Khaki,f0e68c'
+onclick='set_color_xbox( this, "bar1", "#f0e68c", "Yellow.Khaki", "fg" );'
+>&nbsp;X</span><!--148--><span class="bar bar2" style='color:#ffd700;' title='fg:Yellow.Gold,ffd700'
+onclick='set_color_xbox( this, "bar1", "#ffd700", "Yellow.Gold", "fg" );'
+>&nbsp;X</span><!--149--><span class="bar bar2" style='color:#bdb76b;' title='fg:Yellow.Dark-Khaki,bdb76b'
+onclick='set_color_xbox( this, "bar1", "#bdb76b", "Yellow.Dark-Khaki", "fg" );'
+>&nbsp;X</span><!--150--><span class="bar bar2" style='color:#f5f5f5;' title='fg:White.White-Smoke,f5f5f5'
+onclick='set_color_xbox( this, "bar1", "#f5f5f5", "White.White-Smoke", "fg" );'
+>&nbsp;X</span><!--151--><span class="bar bar2" style='color:#ffffff;' title='fg:White.White,ffffff'
+onclick='set_color_xbox( this, "bar1", "#ffffff", "White.White", "fg" );'
+>&nbsp;X</span><!--152--><span class="bar bar2" style='color:#fffafa;' title='fg:White.Snow,fffafa'
+onclick='set_color_xbox( this, "bar1", "#fffafa", "White.Snow", "fg" );'
+>&nbsp;X</span><!--153--><span class="bar bar2" style='color:#fff5ee;' title='fg:White.Sea-Shell,fff5ee'
+onclick='set_color_xbox( this, "bar1", "#fff5ee", "White.Sea-Shell", "fg" );'
+>&nbsp;X</span><!--154--><span class="bar bar2" style='color:#fdf5e6;' title='fg:White.Old-Lace,fdf5e6'
+onclick='set_color_xbox( this, "bar1", "#fdf5e6", "White.Old-Lace", "fg" );'
+>&nbsp;X</span><!--155--><span class="bar bar2" style='color:#ffe4e1;' title='fg:White.Misty-Rose,ffe4e1'
+onclick='set_color_xbox( this, "bar1", "#ffe4e1", "White.Misty-Rose", "fg" );'
+>&nbsp;X</span><!--156--><span class="bar bar2" style='color:#f5fffa;' title='fg:White.Mint-Cream,f5fffa'
+onclick='set_color_xbox( this, "bar1", "#f5fffa", "White.Mint-Cream", "fg" );'
+>&nbsp;X</span><!--157--><span class="bar bar2" style='color:#faf0e6;' title='fg:White.Linen,faf0e6'
+onclick='set_color_xbox( this, "bar1", "#faf0e6", "White.Linen", "fg" );'
+>&nbsp;X</span><!--158--><span class="bar bar2" style='color:#fff0f5;' title='fg:White.Lavender-Blush,fff0f5'
+onclick='set_color_xbox( this, "bar1", "#fff0f5", "White.Lavender-Blush", "fg" );'
+>&nbsp;X</span><!--159--><span class="bar bar2" style='color:#fffff0;' title='fg:White.Ivory,fffff0'
+onclick='set_color_xbox( this, "bar1", "#fffff0", "White.Ivory", "fg" );'
+>&nbsp;X</span><!--160--><span class="bar bar2" style='color:#f0fff0;' title='fg:White.Honey-Dew,f0fff0'
+onclick='set_color_xbox( this, "bar1", "#f0fff0", "White.Honey-Dew", "fg" );'
+>&nbsp;X</span><!--161--><span class="bar bar2" style='color:#f8f8ff;' title='fg:White.Ghost-White,f8f8ff'
+onclick='set_color_xbox( this, "bar1", "#f8f8ff", "White.Ghost-White", "fg" );'
+>&nbsp;X</span><!--162--><span class="bar bar2" style='color:#fffaf0;' title='fg:White.Floral-White,fffaf0'
+onclick='set_color_xbox( this, "bar1", "#fffaf0", "White.Floral-White", "fg" );'
+>&nbsp;X</span><!--163--><span class="bar bar2" style='color:#f5f5dc;' title='fg:White.Beige,f5f5dc'
+onclick='set_color_xbox( this, "bar1", "#f5f5dc", "White.Beige", "fg" );'
+>&nbsp;X</span><!--164--><span class="bar bar2" style='color:#f0ffff;' title='fg:White.Azure,f0ffff'
+onclick='set_color_xbox( this, "bar1", "#f0ffff", "White.Azure", "fg" );'
+>&nbsp;X</span><!--165--><span class="bar bar2" style='color:#faebd7;' title='fg:White.Antique-White,faebd7'
+onclick='set_color_xbox( this, "bar1", "#faebd7", "White.Antique-White", "fg" );'
+>&nbsp;X</span><!--166--><span class="bar bar2" style='color:#f0f8ff;' title='fg:White.Alice-Blue,f0f8ff'
+onclick='set_color_xbox( this, "bar1", "#f0f8ff", "White.Alice-Blue", "fg" );'
+>&nbsp;X</span><!--167--><span class="bar bar2" style='color:#fa8072;' title='fg:Red.Salmon,fa8072'
+onclick='set_color_xbox( this, "bar1", "#fa8072", "Red.Salmon", "fg" );'
+>&nbsp;X</span><!--168--><span class="bar bar2" style='color:#ff0000;' title='fg:Red.Red,ff0000'
+onclick='set_color_xbox( this, "bar1", "#ff0000", "Red.Red", "fg" );'
+>&nbsp;X</span><!--169--><span class="bar bar2" style='color:#f08080;' title='fg:Red.Light-Coral,f08080'
+onclick='set_color_xbox( this, "bar1", "#f08080", "Red.Light-Coral", "fg" );'
+>&nbsp;X</span><!--170--><span class="bar bar2" style='color:#cd5c5c;' title='fg:Red.Indian-Red,cd5c5c'
+onclick='set_color_xbox( this, "bar1", "#cd5c5c", "Red.Indian-Red", "fg" );'
+>&nbsp;X</span><!--171--><span class="bar bar2" style='color:#b22222;' title='fg:Red.Fire-Brick,b22222'
+onclick='set_color_xbox( this, "bar1", "#b22222", "Red.Fire-Brick", "fg" );'
+>&nbsp;X</span><!--172--><span class="bar bar2" style='color:#e9967a;' title='fg:Red.Dark-Salmon,e9967a'
+onclick='set_color_xbox( this, "bar1", "#e9967a", "Red.Dark-Salmon", "fg" );'
+>&nbsp;X</span><!--173--><span class="bar bar2" style='color:#8b0000;' title='fg:Red.Dark-Red,8b0000'
+onclick='set_color_xbox( this, "bar1", "#8b0000", "Red.Dark-Red", "fg" );'
+>&nbsp;X</span><!--174--><span class="bar bar2" style='color:#dc143c;' title='fg:Red.Crimson,dc143c'
+onclick='set_color_xbox( this, "bar1", "#dc143c", "Red.Crimson", "fg" );'
+>&nbsp;X</span><!--175--><span class="bar bar2" style='color:#ee82ee;' title='fg:Purple.Violet,ee82ee'
+onclick='set_color_xbox( this, "bar1", "#ee82ee", "Purple.Violet", "fg" );'
+>&nbsp;X</span><!--176--><span class="bar bar2" style='color:#d8bfd8;' title='fg:Purple.Thistle,d8bfd8'
+onclick='set_color_xbox( this, "bar1", "#d8bfd8", "Purple.Thistle", "fg" );'
+>&nbsp;X</span><!--177--><span class="bar bar2" style='color:#6a5acd;' title='fg:Purple.Slate-Blue,6a5acd'
+onclick='set_color_xbox( this, "bar1", "#6a5acd", "Purple.Slate-Blue", "fg" );'
+>&nbsp;X</span><!--178--><span class="bar bar2" style='color:#663399;' title='fg:Purple.Rebecca-Purple,663399'
+onclick='set_color_xbox( this, "bar1", "#663399", "Purple.Rebecca-Purple", "fg" );'
+>&nbsp;X</span><!--179--><span class="bar bar2" style='color:#800080;' title='fg:Purple.Purple,800080'
+onclick='set_color_xbox( this, "bar1", "#800080", "Purple.Purple", "fg" );'
+>&nbsp;X</span><!--180--><span class="bar bar2" style='color:#dda0dd;' title='fg:Purple.Plum,dda0dd'
+onclick='set_color_xbox( this, "bar1", "#dda0dd", "Purple.Plum", "fg" );'
+>&nbsp;X</span><!--181--><span class="bar bar2" style='color:#da70d6;' title='fg:Purple.Orchid,da70d6'
+onclick='set_color_xbox( this, "bar1", "#da70d6", "Purple.Orchid", "fg" );'
+>&nbsp;X</span><!--182--><span class="bar bar2" style='color:#9370db;' title='fg:Purple.Medium-Purple,9370db'
+onclick='set_color_xbox( this, "bar1", "#9370db", "Purple.Medium-Purple", "fg" );'
+>&nbsp;X</span><!--183--><span class="bar bar2" style='color:#ba55d3;' title='fg:Purple.Medium-Orchid,ba55d3'
+onclick='set_color_xbox( this, "bar1", "#ba55d3", "Purple.Medium-Orchid", "fg" );'
+>&nbsp;X</span><!--184--><span class="bar bar2" style='color:#ff00ff;' title='fg:Purple.Magenta,ff00ff'
+onclick='set_color_xbox( this, "bar1", "#ff00ff", "Purple.Magenta", "fg" );'
+>&nbsp;X</span><!--185--><span class="bar bar2" style='color:#e6e6fa;' title='fg:Purple.Lavender,e6e6fa'
+onclick='set_color_xbox( this, "bar1", "#e6e6fa", "Purple.Lavender", "fg" );'
+>&nbsp;X</span><!--186--><span class="bar bar2" style='color:#4b0082;' title='fg:Purple.Indigo,4b0082'
+onclick='set_color_xbox( this, "bar1", "#4b0082", "Purple.Indigo", "fg" );'
+>&nbsp;X</span><!--187--><span class="bar bar2" style='color:#9400d3;' title='fg:Purple.Dark-Violet,9400d3'
+onclick='set_color_xbox( this, "bar1", "#9400d3", "Purple.Dark-Violet", "fg" );'
+>&nbsp;X</span><!--188--><span class="bar bar2" style='color:#483d8b;' title='fg:Purple.Dark-Slateblue,483d8b'
+onclick='set_color_xbox( this, "bar1", "#483d8b", "Purple.Dark-Slateblue", "fg" );'
+>&nbsp;X</span><!--189--><span class="bar bar2" style='color:#9932cc;' title='fg:Purple.Dark-Orchid,9932cc'
+onclick='set_color_xbox( this, "bar1", "#9932cc", "Purple.Dark-Orchid", "fg" );'
+>&nbsp;X</span><!--190--><span class="bar bar2" style='color:#8b008b;' title='fg:Purple.Dark-Magenta,8b008b'
+onclick='set_color_xbox( this, "bar1", "#8b008b", "Purple.Dark-Magenta", "fg" );'
+>&nbsp;X</span><!--191--><span class="bar bar2" style='color:#8a2be2;' title='fg:Purple.Blue-Violet,8a2be2'
+onclick='set_color_xbox( this, "bar1", "#8a2be2", "Purple.Blue-Violet", "fg" );'
+>&nbsp;X</span><!--192--><span class="bar bar2" style='color:#ffc0cb;' title='fg:Pink.Pink,ffc0cb'
+onclick='set_color_xbox( this, "bar1", "#ffc0cb", "Pink.Pink", "fg" );'
+>&nbsp;X</span><!--193--><span class="bar bar2" style='color:#db7093;' title='fg:Pink.Pale-Violet-Red,db7093'
+onclick='set_color_xbox( this, "bar1", "#db7093", "Pink.Pale-Violet-Red", "fg" );'
+>&nbsp;X</span><!--194--><span class="bar bar2" style='color:#c71585;' title='fg:Pink.Medium-Violetred,c71585'
+onclick='set_color_xbox( this, "bar1", "#c71585", "Pink.Medium-Violetred", "fg" );'
+>&nbsp;X</span><!--195--><span class="bar bar2" style='color:#ffb6c1;' title='fg:Pink.Light-Pink,ffb6c1'
+onclick='set_color_xbox( this, "bar1", "#ffb6c1", "Pink.Light-Pink", "fg" );'
+>&nbsp;X</span><!--196--><span class="bar bar2" style='color:#ff69b4;' title='fg:Pink.Hot-Pink,ff69b4'
+onclick='set_color_xbox( this, "bar1", "#ff69b4", "Pink.Hot-Pink", "fg" );'
+>&nbsp;X</span><!--197--><span class="bar bar2" style='color:#ff1493;' title='fg:Pink.Deep-Pink,ff1493'
+onclick='set_color_xbox( this, "bar1", "#ff1493", "Pink.Deep-Pink", "fg" );'
+>&nbsp;X</span><!--198--><span class="bar bar2" style='color:#ff6347;' title='fg:Orange.Tomato,ff6347'
+onclick='set_color_xbox( this, "bar1", "#ff6347", "Orange.Tomato", "fg" );'
+>&nbsp;X</span><!--199--><span class="bar bar2" style='color:#ff4500;' title='fg:Orange.Orange-Red,ff4500'
+onclick='set_color_xbox( this, "bar1", "#ff4500", "Orange.Orange-Red", "fg" );'
+>&nbsp;X</span><!--200--><span class="bar bar2" style='color:#ffa500;' title='fg:Orange.Orange,ffa500'
+onclick='set_color_xbox( this, "bar1", "#ffa500", "Orange.Orange", "fg" );'
+>&nbsp;X</span><!--201--><span class="bar bar2" style='color:#ffa07a;' title='fg:Orange.Light-Salmon,ffa07a'
+onclick='set_color_xbox( this, "bar1", "#ffa07a", "Orange.Light-Salmon", "fg" );'
+>&nbsp;X</span><!--202--><span class="bar bar2" style='color:#ff8c00;' title='fg:Orange.Dark-Orange,ff8c00'
+onclick='set_color_xbox( this, "bar1", "#ff8c00", "Orange.Dark-Orange", "fg" );'
+>&nbsp;X</span><!--203--><span class="bar bar2" style='color:#ff7f50;' title='fg:Orange.Coral,ff7f50'
+onclick='set_color_xbox( this, "bar1", "#ff7f50", "Orange.Coral", "fg" );'
+>&nbsp;X</span><!--204--><span class="bar bar2" style='color:#9acd32;' title='fg:Green.Yellow-Green,9acd32'
+onclick='set_color_xbox( this, "bar1", "#9acd32", "Green.Yellow-Green", "fg" );'
+>&nbsp;X</span><!--205--><span class="bar bar2" style='color:#008080;' title='fg:Green.Teal,008080'
+onclick='set_color_xbox( this, "bar1", "#008080", "Green.Teal", "fg" );'
+>&nbsp;X</span><!--206--><span class="bar bar2" style='color:#00ff7f;' title='fg:Green.Spring-Green,00ff7f'
+onclick='set_color_xbox( this, "bar1", "#00ff7f", "Green.Spring-Green", "fg" );'
+>&nbsp;X</span><!--207--><span class="bar bar2" style='color:#2e8b57;' title='fg:Green.Sea-Green,2e8b57'
+onclick='set_color_xbox( this, "bar1", "#2e8b57", "Green.Sea-Green", "fg" );'
+>&nbsp;X</span><!--208--><span class="bar bar2" style='color:#98fb98;' title='fg:Green.Pale-Green,98fb98'
+onclick='set_color_xbox( this, "bar1", "#98fb98", "Green.Pale-Green", "fg" );'
+>&nbsp;X</span><!--209--><span class="bar bar2" style='color:#6b8e23;' title='fg:Green.Olive-Drab,6b8e23'
+onclick='set_color_xbox( this, "bar1", "#6b8e23", "Green.Olive-Drab", "fg" );'
+>&nbsp;X</span><!--210--><span class="bar bar2" style='color:#808000;' title='fg:Green.Olive,808000'
+onclick='set_color_xbox( this, "bar1", "#808000", "Green.Olive", "fg" );'
+>&nbsp;X</span><!--211--><span class="bar bar2" style='color:#00fa9a;' title='fg:Green.Medium-Spring-Green,00fa9a'
+onclick='set_color_xbox( this, "bar1", "#00fa9a", "Green.Medium-Spring-Green", "fg" );'
+>&nbsp;X</span><!--212--><span class="bar bar2" style='color:#3cb371;' title='fg:Green.Medium-Sea-Green,3cb371'
+onclick='set_color_xbox( this, "bar1", "#3cb371", "Green.Medium-Sea-Green", "fg" );'
+>&nbsp;X</span><!--213--><span class="bar bar2" style='color:#66cdaa;' title='fg:Green.Medium-Aqua-Marine,66cdaa'
+onclick='set_color_xbox( this, "bar1", "#66cdaa", "Green.Medium-Aqua-Marine", "fg" );'
+>&nbsp;X</span><!--214--><span class="bar bar2" style='color:#32cd32;' title='fg:Green.Lime-Green,32cd32'
+onclick='set_color_xbox( this, "bar1", "#32cd32", "Green.Lime-Green", "fg" );'
+>&nbsp;X</span><!--215--><span class="bar bar2" style='color:#00ff00;' title='fg:Green.Lime,00ff00'
+onclick='set_color_xbox( this, "bar1", "#00ff00", "Green.Lime", "fg" );'
+>&nbsp;X</span><!--216--><span class="bar bar2" style='color:#20b2aa;' title='fg:Green.Light-Sea-Green,20b2aa'
+onclick='set_color_xbox( this, "bar1", "#20b2aa", "Green.Light-Sea-Green", "fg" );'
+>&nbsp;X</span><!--217--><span class="bar bar2" style='color:#90ee90;' title='fg:Green.Light-Green,90ee90'
+onclick='set_color_xbox( this, "bar1", "#90ee90", "Green.Light-Green", "fg" );'
+>&nbsp;X</span><!--218--><span class="bar bar2" style='color:#7cfc00;' title='fg:Green.Lawn-Green,7cfc00'
+onclick='set_color_xbox( this, "bar1", "#7cfc00", "Green.Lawn-Green", "fg" );'
+>&nbsp;X</span><!--219--><span class="bar bar2" style='color:#adff2f;' title='fg:Green.Green-Yellow,adff2f'
+onclick='set_color_xbox( this, "bar1", "#adff2f", "Green.Green-Yellow", "fg" );'
+>&nbsp;X</span><!--220--><span class="bar bar2" style='color:#008000;' title='fg:Green.Green,008000'
+onclick='set_color_xbox( this, "bar1", "#008000", "Green.Green", "fg" );'
+>&nbsp;X</span><!--221--><span class="bar bar2" style='color:#228b22;' title='fg:Green.Forest-Green,228b22'
+onclick='set_color_xbox( this, "bar1", "#228b22", "Green.Forest-Green", "fg" );'
+>&nbsp;X</span><!--222--><span class="bar bar2" style='color:#8fbc8b;' title='fg:Green.Dark-Sea-Green,8fbc8b'
+onclick='set_color_xbox( this, "bar1", "#8fbc8b", "Green.Dark-Sea-Green", "fg" );'
+>&nbsp;X</span><!--223--><span class="bar bar2" style='color:#556b2f;' title='fg:Green.Dark-Olive-Green,556b2f'
+onclick='set_color_xbox( this, "bar1", "#556b2f", "Green.Dark-Olive-Green", "fg" );'
+>&nbsp;X</span><!--224--><span class="bar bar2" style='color:#006400;' title='fg:Green.Dark-Green,006400'
+onclick='set_color_xbox( this, "bar1", "#006400", "Green.Dark-Green", "fg" );'
+>&nbsp;X</span><!--225--><span class="bar bar2" style='color:#008b8b;' title='fg:Green.Dark-Cyan,008b8b'
+onclick='set_color_xbox( this, "bar1", "#008b8b", "Green.Dark-Cyan", "fg" );'
+>&nbsp;X</span><!--226--><span class="bar bar2" style='color:#7fff00;' title='fg:Green.Chartreuse,7fff00'
+onclick='set_color_xbox( this, "bar1", "#7fff00", "Green.Chartreuse", "fg" );'
+>&nbsp;X</span><!--227--><span class="bar bar2" style='color:#708090;' title='fg:Gray.Slate-Gray,708090'
+onclick='set_color_xbox( this, "bar1", "#708090", "Gray.Slate-Gray", "fg" );'
+>&nbsp;X</span><!--228--><span class="bar bar2" style='color:#c0c0c0;' title='fg:Gray.Silver,c0c0c0'
+onclick='set_color_xbox( this, "bar1", "#c0c0c0", "Gray.Silver", "fg" );'
+>&nbsp;X</span><!--229--><span class="bar bar2" style='color:#778899;' title='fg:Gray.Light-Slate-Gray,778899'
+onclick='set_color_xbox( this, "bar1", "#778899", "Gray.Light-Slate-Gray", "fg" );'
+>&nbsp;X</span><!--230--><span class="bar bar2" style='color:#d3d3d3;' title='fg:Gray.Light-Gray,d3d3d3'
+onclick='set_color_xbox( this, "bar1", "#d3d3d3", "Gray.Light-Gray", "fg" );'
+>&nbsp;X</span><!--231--><span class="bar bar2" style='color:#808080;' title='fg:Gray.Gray,808080'
+onclick='set_color_xbox( this, "bar1", "#808080", "Gray.Gray", "fg" );'
+>&nbsp;X</span><!--232--><span class="bar bar2" style='color:#dcdcdc;' title='fg:Gray.Gainsboro,dcdcdc'
+onclick='set_color_xbox( this, "bar1", "#dcdcdc", "Gray.Gainsboro", "fg" );'
+>&nbsp;X</span><!--233--><span class="bar bar2" style='color:#696969;' title='fg:Gray.Dim-Gray,696969'
+onclick='set_color_xbox( this, "bar1", "#696969", "Gray.Dim-Gray", "fg" );'
+>&nbsp;X</span><!--234--><span class="bar bar2" style='color:#2f4f4f;' title='fg:Gray.Dark-Slate-Gray,2f4f4f'
+onclick='set_color_xbox( this, "bar1", "#2f4f4f", "Gray.Dark-Slate-Gray", "fg" );'
+>&nbsp;X</span><!--235--><span class="bar bar2" style='color:#a9a9a9;' title='fg:Gray.Dark-Gray,a9a9a9'
+onclick='set_color_xbox( this, "bar1", "#a9a9a9", "Gray.Dark-Gray", "fg" );'
+>&nbsp;X</span><!--236--><span class="bar bar2" style='color:#000000;' title='fg:Gray.Black,000000'
+onclick='set_color_xbox( this, "bar1", "#000000", "Gray.Black", "fg" );'
+>&nbsp;X</span><!--237--><span class="bar bar2" style='color:#f5deb3;' title='fg:Brown.Wheat,f5deb3'
+onclick='set_color_xbox( this, "bar1", "#f5deb3", "Brown.Wheat", "fg" );'
+>&nbsp;X</span><!--238--><span class="bar bar2" style='color:#d2b48c;' title='fg:Brown.Tan,d2b48c'
+onclick='set_color_xbox( this, "bar1", "#d2b48c", "Brown.Tan", "fg" );'
+>&nbsp;X</span><!--239--><span class="bar bar2" style='color:#a0522d;' title='fg:Brown.Sienna,a0522d'
+onclick='set_color_xbox( this, "bar1", "#a0522d", "Brown.Sienna", "fg" );'
+>&nbsp;X</span><!--240--><span class="bar bar2" style='color:#f4a460;' title='fg:Brown.Sandy-Brown,f4a460'
+onclick='set_color_xbox( this, "bar1", "#f4a460", "Brown.Sandy-Brown", "fg" );'
+>&nbsp;X</span><!--241--><span class="bar bar2" style='color:#8b4513;' title='fg:Brown.Saddle-Brown,8b4513'
+onclick='set_color_xbox( this, "bar1", "#8b4513", "Brown.Saddle-Brown", "fg" );'
+>&nbsp;X</span><!--242--><span class="bar bar2" style='color:#bc8f8f;' title='fg:Brown.Rosy-Brown,bc8f8f'
+onclick='set_color_xbox( this, "bar1", "#bc8f8f", "Brown.Rosy-Brown", "fg" );'
+>&nbsp;X</span><!--243--><span class="bar bar2" style='color:#cd853f;' title='fg:Brown.Peru,cd853f'
+onclick='set_color_xbox( this, "bar1", "#cd853f", "Brown.Peru", "fg" );'
+>&nbsp;X</span><!--244--><span class="bar bar2" style='color:#ffdead;' title='fg:Brown.Navajo-White,ffdead'
+onclick='set_color_xbox( this, "bar1", "#ffdead", "Brown.Navajo-White", "fg" );'
+>&nbsp;X</span><!--245--><span class="bar bar2" style='color:#800000;' title='fg:Brown.Maroon,800000'
+onclick='set_color_xbox( this, "bar1", "#800000", "Brown.Maroon", "fg" );'
+>&nbsp;X</span><!--246--><span class="bar bar2" style='color:#daa520;' title='fg:Brown.Golden-Rod,daa520'
+onclick='set_color_xbox( this, "bar1", "#daa520", "Brown.Golden-Rod", "fg" );'
+>&nbsp;X</span><!--247--><span class="bar bar2" style='color:#b8860b;' title='fg:Brown.Dark-Golden-Rod,b8860b'
+onclick='set_color_xbox( this, "bar1", "#b8860b", "Brown.Dark-Golden-Rod", "fg" );'
+>&nbsp;X</span><!--248--><span class="bar bar2" style='color:#fff8dc;' title='fg:Brown.Corn-Silk,fff8dc'
+onclick='set_color_xbox( this, "bar1", "#fff8dc", "Brown.Corn-Silk", "fg" );'
+>&nbsp;X</span><!--249--><span class="bar bar2" style='color:#d2691e;' title='fg:Brown.Chocolate,d2691e'
+onclick='set_color_xbox( this, "bar1", "#d2691e", "Brown.Chocolate", "fg" );'
+>&nbsp;X</span><!--250--><span class="bar bar2" style='color:#deb887;' title='fg:Brown.Burly-Wood,deb887'
+onclick='set_color_xbox( this, "bar1", "#deb887", "Brown.Burly-Wood", "fg" );'
+>&nbsp;X</span><!--251--><span class="bar bar2" style='color:#a52a2a;' title='fg:Brown.Brown,a52a2a'
+onclick='set_color_xbox( this, "bar1", "#a52a2a", "Brown.Brown", "fg" );'
+>&nbsp;X</span><!--252--><span class="bar bar2" style='color:#ffebcd;' title='fg:Brown.Blanched-Almond,ffebcd'
+onclick='set_color_xbox( this, "bar1", "#ffebcd", "Brown.Blanched-Almond", "fg" );'
+>&nbsp;X</span><!--253--><span class="bar bar2" style='color:#ffe4c4;' title='fg:Brown.Bisque,ffe4c4'
+onclick='set_color_xbox( this, "bar1", "#ffe4c4", "Brown.Bisque", "fg" );'
+>&nbsp;X</span><!--254--><span class="bar bar2" style='color:#40e0d0;' title='fg:Blue.Turquoise,40e0d0'
+onclick='set_color_xbox( this, "bar1", "#40e0d0", "Blue.Turquoise", "fg" );'
+>&nbsp;X</span><!--255--><span class="bar bar2" style='color:#4682b4;' title='fg:Blue.Steel-Blue,4682b4'
+onclick='set_color_xbox( this, "bar1", "#4682b4", "Blue.Steel-Blue", "fg" );'
+>&nbsp;X</span><!--256--><span class="bar bar2" style='color:#87ceeb;' title='fg:Blue.Sky-Blue,87ceeb'
+onclick='set_color_xbox( this, "bar1", "#87ceeb", "Blue.Sky-Blue", "fg" );'
+>&nbsp;X</span><!--257--><span class="bar bar2" style='color:#4169e1;' title='fg:Blue.Royal-Blue,4169e1'
+onclick='set_color_xbox( this, "bar1", "#4169e1", "Blue.Royal-Blue", "fg" );'
+>&nbsp;X</span><!--258--><span class="bar bar2" style='color:#b0e0e6;' title='fg:Blue.Powder-Blue,b0e0e6'
+onclick='set_color_xbox( this, "bar1", "#b0e0e6", "Blue.Powder-Blue", "fg" );'
+>&nbsp;X</span><!--259--><span class="bar bar2" style='color:#afeeee;' title='fg:Blue.Pale-Turquoise,afeeee'
+onclick='set_color_xbox( this, "bar1", "#afeeee", "Blue.Pale-Turquoise", "fg" );'
+>&nbsp;X</span><!--260--><span class="bar bar2" style='color:#000080;' title='fg:Blue.Navy,000080'
+onclick='set_color_xbox( this, "bar1", "#000080", "Blue.Navy", "fg" );'
+>&nbsp;X</span><!--261--><span class="bar bar2" style='color:#191970;' title='fg:Blue.Midnight-Blue,191970'
+onclick='set_color_xbox( this, "bar1", "#191970", "Blue.Midnight-Blue", "fg" );'
+>&nbsp;X</span><!--262--><span class="bar bar2" style='color:#48d1cc;' title='fg:Blue.Medium-Turquoise,48d1cc'
+onclick='set_color_xbox( this, "bar1", "#48d1cc", "Blue.Medium-Turquoise", "fg" );'
+>&nbsp;X</span><!--263--><span class="bar bar2" style='color:#7b68ee;' title='fg:Blue.Medium-Slate-Blue,7b68ee'
+onclick='set_color_xbox( this, "bar1", "#7b68ee", "Blue.Medium-Slate-Blue", "fg" );'
+>&nbsp;X</span><!--264--><span class="bar bar2" style='color:#0000cd;' title='fg:Blue.Medium-Blue,0000cd'
+onclick='set_color_xbox( this, "bar1", "#0000cd", "Blue.Medium-Blue", "fg" );'
+>&nbsp;X</span><!--265--><span class="bar bar2" style='color:#b0c4de;' title='fg:Blue.Light-Steel-Blue,b0c4de'
+onclick='set_color_xbox( this, "bar1", "#b0c4de", "Blue.Light-Steel-Blue", "fg" );'
+>&nbsp;X</span><!--266--><span class="bar bar2" style='color:#87cefa;' title='fg:Blue.Light-Sky-Blue,87cefa'
+onclick='set_color_xbox( this, "bar1", "#87cefa", "Blue.Light-Sky-Blue", "fg" );'
+>&nbsp;X</span><!--267--><span class="bar bar2" style='color:#e0ffff;' title='fg:Blue.Light-Cyan,e0ffff'
+onclick='set_color_xbox( this, "bar1", "#e0ffff", "Blue.Light-Cyan", "fg" );'
+>&nbsp;X</span><!--268--><span class="bar bar2" style='color:#add8e6;' title='fg:Blue.Light-Blue,add8e6'
+onclick='set_color_xbox( this, "bar1", "#add8e6", "Blue.Light-Blue", "fg" );'
+>&nbsp;X</span><!--269--><span class="bar bar2" style='color:#1e90ff;' title='fg:Blue.Dodger-Blue,1e90ff'
+onclick='set_color_xbox( this, "bar1", "#1e90ff", "Blue.Dodger-Blue", "fg" );'
+>&nbsp;X</span><!--270--><span class="bar bar2" style='color:#00bfff;' title='fg:Blue.Deep-Sky-Blue,00bfff'
+onclick='set_color_xbox( this, "bar1", "#00bfff", "Blue.Deep-Sky-Blue", "fg" );'
+>&nbsp;X</span><!--271--><span class="bar bar2" style='color:#00ced1;' title='fg:Blue.Dark-Turquoise,00ced1'
+onclick='set_color_xbox( this, "bar1", "#00ced1", "Blue.Dark-Turquoise", "fg" );'
+>&nbsp;X</span><!--272--><span class="bar bar2" style='color:#00008b;' title='fg:Blue.Dark-Blue,00008b'
+onclick='set_color_xbox( this, "bar1", "#00008b", "Blue.Dark-Blue", "fg" );'
+>&nbsp;X</span><!--273--><span class="bar bar2" style='color:#00ffff;' title='fg:Blue.Cyan,00ffff'
+onclick='set_color_xbox( this, "bar1", "#00ffff", "Blue.Cyan", "fg" );'
+>&nbsp;X</span><!--274--><span class="bar bar2" style='color:#6495ed;' title='fg:Blue.Corn-Flower-Blue,6495ed'
+onclick='set_color_xbox( this, "bar1", "#6495ed", "Blue.Corn-Flower-Blue", "fg" );'
+>&nbsp;X</span><!--275--><span class="bar bar2" style='color:#5f9ea0;' title='fg:Blue.Cadet-Blue,5f9ea0'
+onclick='set_color_xbox( this, "bar1", "#5f9ea0", "Blue.Cadet-Blue", "fg" );'
+>&nbsp;X</span><!--276--><span class="bar bar2" style='color:#0000ff;' title='fg:Blue.Blue,0000ff'
+onclick='set_color_xbox( this, "bar1", "#0000ff", "Blue.Blue", "fg" );'
+>&nbsp;X</span><!--277--><span class="bar bar2" style='color:#7fffd4;' title='fg:Blue.Aqua-Marine,7fffd4'
+onclick='set_color_xbox( this, "bar1", "#7fffd4", "Blue.Aqua-Marine", "fg" );'
+>&nbsp;X</span><!--278-->
+
+</div>
+<div style='clear:both'></div>
+
+
+<div id=vim_demo>Demo text.</div>
+<div style='clear:both'></div>
+
+
+
+<button style='height: 20px; width: 100px;'
+onclick='vim_add();'> vim add </button>
+<button style='height: 20px; width: 100px;'
+onclick='vim_clear();'> vim clear </button>
+<div id=vim_colors>
+" vim_colors.syn, see colors in vim with :so %<br />
+
+</div>
+<div style='clear:both'></div>
+
+
+
+</x-html>

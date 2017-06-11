@@ -1,0 +1,241 @@
+<!-- GPL(C) moshahmed_at_gmail.com --> <title> allcolors </title>
+
+<style>
+.bar { width: 20px; max-width: 20px; height: 20px; font-size: 18px;
+        display: inline-block; }
+.bar:hover {
+  transform: scale(1.5, 1.5);
+  cursor: crosshair;
+  opacity: .9;
+}
+#vim_demo {
+  border: 1px solid black;
+  width: 200px;
+}
+.bar3fb {
+    width:  200px;
+    border: 1px solid black;
+    display: inline-block;
+}
+.colorpicker5 {
+    width:  60px;
+}
+</style>
+
+<script>
+
+if (!String.format) { /* format is sprintf */
+  String.format = function(format) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return format.replace(/{(\d+)}/g, function(match, number) {
+      return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+      ;
+    });
+  };
+}
+
+function setname(name,rgb,fgbg) {
+  var show = name + ',' + rgb;
+  if(fgbg=='fg') {
+    document.getElementById('bar3f').innerHTML =show;
+  }else{
+    document.getElementById('bar3b').innerHTML =show;
+  }
+  var vim_demo = document.getElementById('vim_demo');
+  if(fgbg=='fg') {
+    vim_demo.style.color=rgb;
+  }else{
+    vim_demo.style.backgroundColor=rgb;
+  }
+}
+
+function set_color_both(obj,aclass,rgb,name,fgbg) {
+    setname(name,rgb,fgbg);
+    var elements = document.getElementsByClassName(aclass);
+    for (var i = 0; i < elements.length; i++) {
+        if(fgbg=='fg') {
+          elements[i].style.color=rgb;
+        }else{
+          elements[i].style.backgroundColor=rgb;
+        }
+    }
+}
+
+function set_color_xbox(obj,aclass,rgb,name,fgbg) {
+  set_color_both(obj,aclass,rgb,name,fgbg);
+  // update the html5 input boxes.
+  if(fgbg=='fg') {
+    document.getElementById('bar5f').value=rgb;
+  }else{
+    document.getElementById('bar5b').value=rgb;
+  }
+}
+
+function set_color_html5(obj,aclass,fgbg) {
+  var rgb = obj.value;
+  var rrggbb = rgb.replace('#','');
+  var name = rgb.replace('#',fgbg+'_');
+  set_color_both(obj,aclass,rgb,name,fgbg);
+  // setname(name,rgb,fgbg);
+}
+
+function vim_add() {
+  var bar3f = document.getElementById('bar3f').innerHTML;
+  var bar3b = document.getElementById('bar3b').innerHTML;
+  var bar3fx = bar3f.split(',');
+  var bar3bx = bar3b.split(',');
+
+  // <span style="color:red;background=green;">red_on_green</span>
+  var span_a_on_b = String.format(
+    '<span style="color:{0}; background-color:{1};">color_{2}_on_{3}</span>',
+    bar3fx[1], bar3bx[1], bar3fx[0], bar3bx[0]);
+
+  // hi red_on_green guifg=#fe3203 guibg=#209234
+  var hi_str = String.format('hi {0} guifg={1} guibg={2}<br />',
+    span_a_on_b, bar3fx[1], bar3bx[1]);
+
+  // syn match red_on_green /<(red_on_green)>/
+  var syn_str = String.format('syn match {0} /\\<\\({0}\\)\\>/<br />',
+    span_a_on_b, bar3fx[0], bar3bx[0]);
+
+  // prepend string (not += append), easier to see changes.
+  var div = document.getElementById('vim_colors');
+  div.innerHTML = hi_str + syn_str + div.innerHTML;
+}
+
+function vim_clear() {
+  var div = document.getElementById('vim_colors');
+  div.innerHTML = '';
+}
+
+</script>
+
+<x-html>
+
+<div id=bar>
+Pick background color: <span id=bar3b class=bar3fb>white,#fefefe</span>
+BG color picker:
+  <input id=bar5b type=color class=colorpicker5
+    onchange='set_color_html5(this, "bar2", "bg");'
+  />
+<div style='clear:both'></div>
+
+
+<span class="bar bar1" style='background:#e74c3c;' title='bg:Reds_alizarin,e74c3c'
+onclick='set_color_xbox( this, "bar2", "#e74c3c", "Reds_alizarin", "bg" );'
+>&nbsp;X</span><!--1--><span class="bar bar1" style='background:#16a085;' title='bg:Teals_green-sea,16a085'
+onclick='set_color_xbox( this, "bar2", "#16a085", "Teals_green-sea", "bg" );'
+>&nbsp;X</span><!--2--><span class="bar bar1" style='background:#1abc9c;' title='bg:Teals_turquoise,1abc9c'
+onclick='set_color_xbox( this, "bar2", "#1abc9c", "Teals_turquoise", "bg" );'
+>&nbsp;X</span><!--3--><span class="bar bar1" style='background:#3498db;' title='bg:Blues_peter-river,3498db'
+onclick='set_color_xbox( this, "bar2", "#3498db", "Blues_peter-river", "bg" );'
+>&nbsp;X</span><!--4--><span class="bar bar1" style='background:#2980b9;' title='bg:Blues_belize-hole,2980b9'
+onclick='set_color_xbox( this, "bar2", "#2980b9", "Blues_belize-hole", "bg" );'
+>&nbsp;X</span><!--5--><span class="bar bar1" style='background:#2ecc71;' title='bg:Greens_emerald,2ecc71'
+onclick='set_color_xbox( this, "bar2", "#2ecc71", "Greens_emerald", "bg" );'
+>&nbsp;X</span><!--6--><span class="bar bar1" style='background:#27ae60;' title='bg:Greens_nephritis,27ae60'
+onclick='set_color_xbox( this, "bar2", "#27ae60", "Greens_nephritis", "bg" );'
+>&nbsp;X</span><!--7--><span class="bar bar1" style='background:#c0392b;' title='bg:Reds_pomegranate,c0392b'
+onclick='set_color_xbox( this, "bar2", "#c0392b", "Reds_pomegranate", "bg" );'
+>&nbsp;X</span><!--8--><span class="bar bar1" style='background:#8e44ad;' title='bg:Purples_wisteria,8e44ad'
+onclick='set_color_xbox( this, "bar2", "#8e44ad", "Purples_wisteria", "bg" );'
+>&nbsp;X</span><!--9--><span class="bar bar1" style='background:#9b59b6;' title='bg:Purples_amethyst,9b59b6'
+onclick='set_color_xbox( this, "bar2", "#9b59b6", "Purples_amethyst", "bg" );'
+>&nbsp;X</span><!--10--><span class="bar bar1" style='background:#34495e;' title='bg:Blacks_wet-asphalt,34495e'
+onclick='set_color_xbox( this, "bar2", "#34495e", "Blacks_wet-asphalt", "bg" );'
+>&nbsp;X</span><!--11--><span class="bar bar1" style='background:#7f8c8d;' title='bg:Grays_asbestos,7f8c8d'
+onclick='set_color_xbox( this, "bar2", "#7f8c8d", "Grays_asbestos", "bg" );'
+>&nbsp;X</span><!--12--><span class="bar bar1" style='background:#95a5a6;' title='bg:Grays_concrete,95a5a6'
+onclick='set_color_xbox( this, "bar2", "#95a5a6", "Grays_concrete", "bg" );'
+>&nbsp;X</span><!--13--><span class="bar bar1" style='background:#bdc3c7;' title='bg:Whites_silver,bdc3c7'
+onclick='set_color_xbox( this, "bar2", "#bdc3c7", "Whites_silver", "bg" );'
+>&nbsp;X</span><!--14--><span class="bar bar1" style='background:#ecf0f1;' title='bg:Whites_clouds,ecf0f1'
+onclick='set_color_xbox( this, "bar2", "#ecf0f1", "Whites_clouds", "bg" );'
+>&nbsp;X</span><!--15--><span class="bar bar1" style='background:#f1c40f;' title='bg:Yellows_sunflower,f1c40f'
+onclick='set_color_xbox( this, "bar2", "#f1c40f", "Yellows_sunflower", "bg" );'
+>&nbsp;X</span><!--16--><span class="bar bar1" style='background:#f39c12;' title='bg:Yellows_orange,f39c12'
+onclick='set_color_xbox( this, "bar2", "#f39c12", "Yellows_orange", "bg" );'
+>&nbsp;X</span><!--17--><span class="bar bar1" style='background:#e67e22;' title='bg:Oranges_carrot,e67e22'
+onclick='set_color_xbox( this, "bar2", "#e67e22", "Oranges_carrot", "bg" );'
+>&nbsp;X</span><!--18--><span class="bar bar1" style='background:#d35400;' title='bg:Oranges_pumpkin,d35400'
+onclick='set_color_xbox( this, "bar2", "#d35400", "Oranges_pumpkin", "bg" );'
+>&nbsp;X</span><!--19--><span class="bar bar1" style='background:#2c3e50;' title='bg:Blacks_midnight-blue,2c3e50'
+onclick='set_color_xbox( this, "bar2", "#2c3e50", "Blacks_midnight-blue", "bg" );'
+>&nbsp;X</span><!--20--><div style='clear:both'></div>
+
+
+
+      Pick foreground color: <span id=bar3f class=bar3fb>black,#010101</span>
+      FG color picker
+        <input id=bar5f type=color class=colorpicker5
+        onchange='set_color_html5(this, "bar1", "fg");'
+        />
+      <div style='clear:both'></div>
+
+
+<span class="bar bar2" style='color:#e74c3c;' title='fg:Reds_alizarin,e74c3c'
+onclick='set_color_xbox( this, "bar1", "#e74c3c", "Reds_alizarin", "fg" );'
+>&nbsp;X</span><!--21--><span class="bar bar2" style='color:#16a085;' title='fg:Teals_green-sea,16a085'
+onclick='set_color_xbox( this, "bar1", "#16a085", "Teals_green-sea", "fg" );'
+>&nbsp;X</span><!--22--><span class="bar bar2" style='color:#1abc9c;' title='fg:Teals_turquoise,1abc9c'
+onclick='set_color_xbox( this, "bar1", "#1abc9c", "Teals_turquoise", "fg" );'
+>&nbsp;X</span><!--23--><span class="bar bar2" style='color:#3498db;' title='fg:Blues_peter-river,3498db'
+onclick='set_color_xbox( this, "bar1", "#3498db", "Blues_peter-river", "fg" );'
+>&nbsp;X</span><!--24--><span class="bar bar2" style='color:#2980b9;' title='fg:Blues_belize-hole,2980b9'
+onclick='set_color_xbox( this, "bar1", "#2980b9", "Blues_belize-hole", "fg" );'
+>&nbsp;X</span><!--25--><span class="bar bar2" style='color:#2ecc71;' title='fg:Greens_emerald,2ecc71'
+onclick='set_color_xbox( this, "bar1", "#2ecc71", "Greens_emerald", "fg" );'
+>&nbsp;X</span><!--26--><span class="bar bar2" style='color:#27ae60;' title='fg:Greens_nephritis,27ae60'
+onclick='set_color_xbox( this, "bar1", "#27ae60", "Greens_nephritis", "fg" );'
+>&nbsp;X</span><!--27--><span class="bar bar2" style='color:#c0392b;' title='fg:Reds_pomegranate,c0392b'
+onclick='set_color_xbox( this, "bar1", "#c0392b", "Reds_pomegranate", "fg" );'
+>&nbsp;X</span><!--28--><span class="bar bar2" style='color:#8e44ad;' title='fg:Purples_wisteria,8e44ad'
+onclick='set_color_xbox( this, "bar1", "#8e44ad", "Purples_wisteria", "fg" );'
+>&nbsp;X</span><!--29--><span class="bar bar2" style='color:#9b59b6;' title='fg:Purples_amethyst,9b59b6'
+onclick='set_color_xbox( this, "bar1", "#9b59b6", "Purples_amethyst", "fg" );'
+>&nbsp;X</span><!--30--><span class="bar bar2" style='color:#34495e;' title='fg:Blacks_wet-asphalt,34495e'
+onclick='set_color_xbox( this, "bar1", "#34495e", "Blacks_wet-asphalt", "fg" );'
+>&nbsp;X</span><!--31--><span class="bar bar2" style='color:#7f8c8d;' title='fg:Grays_asbestos,7f8c8d'
+onclick='set_color_xbox( this, "bar1", "#7f8c8d", "Grays_asbestos", "fg" );'
+>&nbsp;X</span><!--32--><span class="bar bar2" style='color:#95a5a6;' title='fg:Grays_concrete,95a5a6'
+onclick='set_color_xbox( this, "bar1", "#95a5a6", "Grays_concrete", "fg" );'
+>&nbsp;X</span><!--33--><span class="bar bar2" style='color:#bdc3c7;' title='fg:Whites_silver,bdc3c7'
+onclick='set_color_xbox( this, "bar1", "#bdc3c7", "Whites_silver", "fg" );'
+>&nbsp;X</span><!--34--><span class="bar bar2" style='color:#ecf0f1;' title='fg:Whites_clouds,ecf0f1'
+onclick='set_color_xbox( this, "bar1", "#ecf0f1", "Whites_clouds", "fg" );'
+>&nbsp;X</span><!--35--><span class="bar bar2" style='color:#f1c40f;' title='fg:Yellows_sunflower,f1c40f'
+onclick='set_color_xbox( this, "bar1", "#f1c40f", "Yellows_sunflower", "fg" );'
+>&nbsp;X</span><!--36--><span class="bar bar2" style='color:#f39c12;' title='fg:Yellows_orange,f39c12'
+onclick='set_color_xbox( this, "bar1", "#f39c12", "Yellows_orange", "fg" );'
+>&nbsp;X</span><!--37--><span class="bar bar2" style='color:#e67e22;' title='fg:Oranges_carrot,e67e22'
+onclick='set_color_xbox( this, "bar1", "#e67e22", "Oranges_carrot", "fg" );'
+>&nbsp;X</span><!--38--><span class="bar bar2" style='color:#d35400;' title='fg:Oranges_pumpkin,d35400'
+onclick='set_color_xbox( this, "bar1", "#d35400", "Oranges_pumpkin", "fg" );'
+>&nbsp;X</span><!--39--><span class="bar bar2" style='color:#2c3e50;' title='fg:Blacks_midnight-blue,2c3e50'
+onclick='set_color_xbox( this, "bar1", "#2c3e50", "Blacks_midnight-blue", "fg" );'
+>&nbsp;X</span><!--40-->
+
+</div>
+<div style='clear:both'></div>
+
+
+<div id=vim_demo>Demo text.</div>
+<div style='clear:both'></div>
+
+
+
+<button style='height: 20px; width: 100px;'
+onclick='vim_add();'> vim add </button>
+<button style='height: 20px; width: 100px;'
+onclick='vim_clear();'> vim clear </button>
+<div id=vim_colors>
+" vim_colors.syn, see colors in vim with :so %<br />
+
+</div>
+<div style='clear:both'></div>
+
+
+
+</x-html>
