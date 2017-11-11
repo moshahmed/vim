@@ -5,7 +5,7 @@
 " =============================================================
 
 set thesaurus=thesaurii.txt
-let b:thesaurus_pat = "thesaurii.txt"
+let s:thesaurus_pat = "thesaurii.txt"
 
 set completeopt+=menuone
 set omnifunc=MoshThesaurusOmniCompleter
@@ -27,8 +27,8 @@ function!    MoshThesaurusOmniCompleter(findstart, base)
         let s:cmd='perl -ne ''chomp; '
                     \.'next if m/^[;#]/;'
                     \.'print qq/$_,/ if '
-                      \.'/\b'.a:word_before_cursor.'\b/io; '' '
-                    \.b:thesaurus_pat
+                    \.'/\b'.a:word_before_cursor.'\b/io; '' '
+                    \.s:thesaurus_pat
         " == To: Debug perl grep cmd, redir to file and echom till redir END.
         " redir >> c:/tmp/vim.log
         " echom s:cmd
