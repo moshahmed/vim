@@ -3,9 +3,11 @@
 " How:  Perl grep_aspell word_before_cursor in thesaurus*.*
 " Ref: https://stackoverflow.com/questions/33453468/vim-thesaurus-file/41754422#41754422
 " =============================================================
-set completeopt+=menuone
+
 set thesaurus=thesaurii.txt
 let b:thesaurus_pat = "thesaurii.txt"
+
+set completeopt+=menuone
 set omnifunc=MoshThesaurusOmniCompleter
 function!    MoshThesaurusOmniCompleter(findstart, base)
     " == First call: find-space-backwards, see :help omnifunc
@@ -30,7 +32,7 @@ function!    MoshThesaurusOmniCompleter(findstart, base)
         " == To: Debug perl grep cmd, redir to file and echom till redir END.
         " redir >> c:/tmp/vim.log
         " echom s:cmd
-        let   s:rawOutput = system(s:cmd)
+        let   s:rawOutput = substitute(system(s:cmd), '\n\+$', '', '')
         " echom s:rawOutput
         let   s:listing = split(s:rawOutput, ',')
         " echom join(s:listing,',')
@@ -42,21 +44,21 @@ function!    MoshThesaurusOmniCompleter(findstart, base)
         " Try spell correction with aspell: echo mispeltword | aspell -a
         let s:cmd2 ='echo '.a:word_before_cursor
             \.'|aspell -a'
-            \.'|perl -lne ''next unless s/^[&]\s.*?://;  print '' '
-        let   s:rawOutput2 = system(s:cmd2)
+            \.'|perl -lne ''chomp; next unless s/^[&]\s.*?:\s*//;  print '' '
+        let   s:rawOutput2 = substitute(system(s:cmd2), '\n\+$', '', '')
         let   s:listing2 = split(s:rawOutput2, ',\s*')
         if len(s:listing2) > 0
           return s:listing2
         endif
 
         " Search dictionary without word delimiters.
-        let s:cmd='perl -ne ''chomp; '
+        let s:cmd3='perl -ne ''chomp; '
                     \.'next if m/^[;#]/;'
                     \.'print qq/$_,/ if '
                       \.'/'.a:word_before_cursor.'/io; '' '
                     \.&dictionary
-        let   s:rawOutput3 = system(s:cmd2)
-        let   s:listing3 = split(s:rawOutput2, ',\s*')
+        let   s:rawOutput3 = substitute(system(s:cmd3), '\n\+$', '', '')
+        let   s:listing3 = split(s:rawOutput3, ',\s*')
         if len(s:listing3) > 0
           return s:listing3
         endif
