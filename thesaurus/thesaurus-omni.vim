@@ -27,6 +27,17 @@ function!    MoshThesaurusOmniCompleter(findstart, base)
                     \.b:thesaurus_pat
         let   s:rawOutput = system(s:cmd)
         let   s:listing = split(s:rawOutput, ',')
-        return s:listing
+        if len(s:listing) > 0
+          return s:listing
+        endif
+
+        " Try aspell spell correction.
+        let s:cmd2 ='echo '.a:word_before_cursor
+            \.'|aspell -a'
+            \.'|perl -lne ''next if /Aspell/;  s/^.*?:\s*//; print '' '
+        let   s:rawOutput2 = system(s:cmd2)
+        let   s:listing2 = split(s:rawOutput2, ',\s*')
+        return s:listing2
+
     endif
 endfunction
