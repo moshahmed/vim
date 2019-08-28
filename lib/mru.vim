@@ -880,14 +880,16 @@ function! s:MRU_Cmd(pat)
     let m = filter(copy(s:MRU_files), 'stridx(v:val, a:pat) != -1')
     if len(m) > 0
 	if len(m) == 1 && !g:MRU_Window_Open_Always
-	    call s:MRU_Edit_File(m[0], 0)
+            let m0=split(m[0],'\t')[0]
+            call s:MRU_Edit_File(m0, 0)
 	    return
 	endif
 
 	" More than one file matches. Try find an accurate match
 	let new_m = filter(m, 'v:val ==# a:pat')
 	if len(new_m) == 1 && !g:MRU_Window_Open_Always
-	    call s:MRU_Edit_File(new_m[0], 0)
+            let new_m0=split(new_m[0],'\t')[0]
+            call s:MRU_Edit_File(new_m0, 0)
 	    return
 	endif
 
@@ -916,7 +918,8 @@ function! s:MRU_Cmd(pat)
     endif
 
     if len(m) == 1 && !g:MRU_Window_Open_Always
-        call s:MRU_Edit_File(m[0], 0)
+        let m0=split(m[0],'\t')[0]
+        call s:MRU_Edit_File(m0, 0)
         return
     endif
 
