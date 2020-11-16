@@ -28,7 +28,8 @@
 "     [F9]  Get filename:time into/from vlc.
 "     [F10] Get file from vlc into cline.
 "     [F11] Get Time from vlc into cline.
-"     [F12] Send cfile via SendToApp (specify exe path in SendToApp)
+"     [F12] Play cfile
+"     [C-F12] Kill vlc
 "
 " Tested:
 "     vlc3,     gvim82, cygwin-perl-5.26 on Win7, 2020-11-15
@@ -40,11 +41,12 @@
 "     0. :so %
 "        :!start c:/view/vlc/vlc.exe
 "        :e ~/sound/mallige.lrc
+"     .  mallige.mp3                               .. Press F12 to play, C-F12 to kill VLC
 "     1. file:///c:/mosh/sound/mallige.mp3         .. press F5 play this file in vlc.
 "     2. [0:1:4] file:///c:/mosh/sound/mallige.mp3 .. press F5 play this file from 64 seconds.
 "     3. 0:1:5                                     .. press F5 to cue/seek vlc to 65 second.
 "     4. press F9, to add [time][filename playing in vlc] to this line.
-" TODO: 
+" TODO:
 "     o Test Audio filenames with spaces, unicode characters
 "     o Test on Linux
 " ==============================================================================
@@ -57,10 +59,11 @@ nmap <F5>   :call Vlc_Set_File_Time()<CR>
 nmap <F9>   :call Vlc_Get_File_Time()<CR>
 nmap <F10>  :call Vlc_Get_Filename()<CR>
 nmap <F11>  :call Vlc_Get_Time()<CR><CR>
-nmap <F12>  :call SendToApp()<CR>
+nmap <F12>  :call Vlc_Play_File('')<CR>
+nmap <C-F12> :call system("pskill vlc ")<CR>
 
-nmap <M-Right> :call Vlc_Seek_Delta(10)
-nmap <M-Left>  :call Vlc_Seek_Delta(-10)
+nmap <M-Right> :call Vlc_Seek_Delta(10)<CR>
+nmap <M-Left>  :call Vlc_Seek_Delta(-10)<CR>
 
 " ==============================================================================
 
@@ -79,8 +82,8 @@ function! Vlc_Set_File_Time()
   let l:matcher_file = matchlist(getline('.'),'\v<(file:///.*[.]\w+)>')
   let l:matcher_time_bracketed = matchlist(getline('.'),'\v\[(\d.*)\]')
   let l:matcher_time_digited = matchlist(getline('.'),'\v(\d+:\d[0-9:.]*)')
-  let l:cfile = expand("<cfile>:p") 
-  let l:mp3file = substitute(expand("%"), '[.]\w\+$', '.mp3','')
+  let l:cfile = expand("<cfile>:p")
+  " let l:lrcmedia = substitute(expand("%"), '[.]\w\+$', '.mp3','')
 
   if len(l:matcher_file) > 4 && filereadable(l:matcher_file[1])
     :echom      ("perl ~/sound/vlc.pl -cmd=set_file=" . l:matcher_file[1])
@@ -94,23 +97,22 @@ function! Vlc_Set_File_Time()
   elseif len(l:matcher_time_digited) > 0
     :echom      ("perl ~/sound/vlc.pl -cmd=set_time=" . l:matcher_time_digited[1])
     :call system("perl ~/sound/vlc.pl -cmd=set_time=" . l:matcher_time_digited[1])
-  elseif filereadable(l:mp3file)
-    :echom       "perl ~/sound/vlc.pl -cmd=set_file=file:///".l:mp3file
-    :call system("perl ~/sound/vlc.pl -cmd=set_file=file:///".l:mp3file)
+  else
+    :let l:lrcmedia = Vlc_Find_Lrc_Media( expand('%') )
+    :echom       "perl ~/sound/vlc.pl -cmd=set_file=file:///".l:lrcmedia
+    :call system("perl ~/sound/vlc.pl -cmd=set_file=file:///".l:lrcmedia)
   endif
 endfunction
 
 " ==============================================================================
 function! Vlc_Get_Filename()
   let l:fileis=system("perl ~/sound/vlc.pl -cmd=get_file")
-    if  len(l:fileis) < 1
-      echoerr "Vlc_Get_Filename no file?"
-    endif
-    if l:fileis =~ '[ ,]'
-      echoerr "Vlc_Get_Filename filenames has spaces etc."
+    if len(l:fileis) < 1 || l:fileis =~ "connection refused"
+      echom 'Error Vlc_Get_Filename:'.l:fileis
+      return
     endif
     " Insert shorter relative path if possible.
-    "   relfile1=$(basename fileis) 
+    "   relfile1=$(basename fileis)
     "   relfile2=./path/file if (fileis is file://dir/./path/file)
     let l:relfile1=substitute(l:fileis, '^.*/', '', '')
     let l:relfile2=substitute(l:fileis, '^.*/\./', './', '')
@@ -127,13 +129,13 @@ endfunction
 function! Vlc_Get_Time()
     " Get current file time from vlc and insert into current line eg. [2:20]
     let l:timeis=system("perl ~/sound/vlc.pl -cmd=get_time")
-    if  len(l:timeis) < 1
-      echoerr "Vlc_Get_Time no time?"
+    if len(l:timeis) < 1 || l:timeis =~ "connection refused"
+      echom 'Error Vlc_Get_Time:'.l:timeis
+      return
     endif
     let l:timeis=substitute(l:timeis, '[^0-9:.]', '', 'g')
     let l:timeis='['.l:timeis.']'
     exe ':s/^/'.l:timeis.'/'
-    " :put ='"'.l:timeis.'"'
 endfunction
 
 " ==============================================================================
@@ -164,21 +166,41 @@ function! Vlc_Seek_Delta(delta)
     :echom      ("perl ~/sound/vlc.pl -cmd=set_time=" . l:seekto)
     :call system("perl ~/sound/vlc.pl -cmd=set_time=" . l:seekto)
 endfunction
- 
+
 " ==============================================================================
-function! SendToApp()
-    " Look for cfile (filename under cursor) in PWD
-    let l:cfile = expand("<cfile>:p") 
+function! Vlc_Play_File(mediafile)
+    if a:mediafile == ''
+    let l:cfile = expand("<cfile>:p")
+    else
+      let l:cfile = a:mediafile
+    endif
+
     if !filereadable(l:cfile)
       echoerr "No cfile ".l:cfile
       return
     endif
+
+    " DosPath
     let l:cfile=substitute(l:cfile, '/', '\\\\', 'g')
-    let l:app="c:/view/mp3directcut/mp3directcut "
-    let l:app="pskill vlc "
+
+    "let l:app="c:/view/mp3directcut/mp3directcut "
     let l:app="c:/view/vlc/vlc "
     let l:cmd=l:app.' '.l:cfile .' &'
     :echom(l:cmd)
     :call system(l:cmd)
 endfunction
+
+function! Vlc_Find_Lrc_Media(lrcfile)
+  " Input:   mallige.lrc
+  " Returns: mallige.mp3
+  for l:ext in ['.mp3', '.m4a', '.avi', '.m4k', '.avi', '.flac']
+    let l:mp3file = substitute( a:lrcfile, '[.]\w\+$', l:ext,'')
+    if filereadable(l:mp3file)
+      let l:mp3file = fnamemodify(l:mp3file, ':p')
+      echom("Found ".l:mp3file)
+      return l:mp3file
+    endif
+  endfor
+  return ''
+endfun
 " ==============================================================================

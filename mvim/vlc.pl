@@ -13,7 +13,7 @@ my ($verbose,$debug,$cmd,$value,$linein) = (0,0,'',,'');
 
 my $USAGE=qq{
 USAGE: $0 [Options] -cmd=VLC_CMDS
-WHAT: control vlc from vim 
+WHAT: control vlc from vim
 Options:
     -port=NN  .. vlc telnet port, default is $host:$port
     -h      .. this help.
@@ -72,7 +72,7 @@ if ($kidpid) { # In parent, parse reply from vlc.
     # the if{} part runs only in the parent process
     DONE:
     while ( defined( $line = <$handle> ) ) {
-      if    ($cmd eq 'get_length') { 
+      if    ($cmd eq 'get_length') {
         if( $line =~ m,^\d+,) {
           print STDOUT seconds_to_hms($line);
           last DONE;
@@ -137,4 +137,4 @@ sub hms_to_seconds {
       return $1 * 60 + $2;
     }
     return $hms;
-} 
+}
