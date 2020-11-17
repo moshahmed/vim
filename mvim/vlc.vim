@@ -18,18 +18,15 @@
 "     and cline is '[0:23.10] file:///C:/mosh/sound/mallige.mp3' .. press F5 to play from 23s
 "     and cline is '[0:33.10]             ../sound/mallige.mp3'  .. press F5 to play from 23s
 "
-"   4. Vim audio controls:
-"     [F2] Play
-"     [F3] Stop
-"     [F4] Pause toggle
-"     [F5] Play [cfile][timestamp] on cline
-"
-"   5. Vim lyric synchronize keys:
-"     [F9]  Get filename:time into/from vlc.
-"     [F10] Get file from vlc into cline.
-"     [F11] Get Time from vlc into cline.
-"     [F12] Play cfile
-"     [C-F12] Kill vlc
+"   +------------------------------+----------------------------------------+
+"   | 4. Vim audio controls:       | 5. Vim lyric synchronize keys:         |
+"   +------------------------------+----------------------------------------+
+"   | [F12] Start vlc on [cfile]   | [F9]  Get filename:time into/from vlc. |
+"   | [F2] Play                    | [F10] Get file from vlc into cline.    |
+"   | [F3] Stop                    | [F11] Get Time from vlc into cline.    |
+"   | [F4] Pause toggle            |                                        |
+"   | [F5] Play [cfile][timestamp] | [C-F12] Kill vlc                       |
+"   +------------------------------+----------------------------------------+
 "
 " Tested:
 "     vlc3,     gvim82, cygwin-perl-5.26 on Win7, 2020-11-15
@@ -56,7 +53,7 @@ nmap <F3>   :call system("perl ~/sound/vlc.pl -cmd=stop")<CR>
 nmap <F4>   :call system("perl ~/sound/vlc.pl -cmd=pause")<CR>
 nmap <F5>   :call Vlc_Set_File_Time()<CR>
 
-nmap <F9>   :call Vlc_Get_File_Time()<CR>
+nmap <F9>   :call Vlc_Get_File_And_Time()<CR>
 nmap <F10>  :call Vlc_Get_Filename()<CR>
 nmap <F11>  :call Vlc_Get_Time()<CR><CR>
 nmap <F12>  :call Vlc_Play_File('')<CR>
@@ -67,7 +64,7 @@ nmap <M-Left>  :call Vlc_Seek_Delta(-10)<CR>
 
 " ==============================================================================
 
-function! Vlc_Get_File_Time()
+function! Vlc_Get_File_And_Time()
   :call Vlc_Get_Filename()
   :call Vlc_Get_Time()
 endfunction
@@ -169,14 +166,21 @@ endfunction
 
 " ==============================================================================
 function! Vlc_Play_File(mediafile)
-    if a:mediafile == ''
-    let l:cfile = expand("<cfile>:p")
-    else
+
+    " Find a media file: given, under cursor, current filename.
+    if a:mediafile != '' && filereadable(a:mediafile)
       let l:cfile = a:mediafile
+    else
+      let l:cfile = expand("<cfile>:p")
+      if !filereadable(l:cfile)
+        let l:cfile=expand('%')
+      endif
     endif
 
-    if !filereadable(l:cfile)
-      echoerr "No cfile ".l:cfile
+    " Convert file.lrc to media file.mp3
+    let l:cfile = Vlc_Find_Lrc_Media(l:cfile)
+    if l:cfile == '' || !filereadable(l:cfile)
+      echoerr "No mediafile ".l:cfile
       return
     endif
 
@@ -184,16 +188,17 @@ function! Vlc_Play_File(mediafile)
     let l:cfile=substitute(l:cfile, '/', '\\\\', 'g')
 
     "let l:app="c:/view/mp3directcut/mp3directcut "
-    let l:app="c:/view/vlc/vlc "
-    let l:cmd=l:app.' '.l:cfile .' &'
-    :echom(l:cmd)
-    :call system(l:cmd)
+    "let l:app="c:/view/vlc/vlc "
+    "let l:cmd='start '.l:app.' '.l:cfile.' &'
+    ":echom(l:cmd)
+    "call system(l:cmd)
+    :exe '!start /B c:/view/vlc/vlc '.l:cfile
 endfunction
 
 function! Vlc_Find_Lrc_Media(lrcfile)
   " Input:   mallige.lrc
   " Returns: mallige.mp3
-  for l:ext in ['.mp3', '.m4a', '.avi', '.m4k', '.avi', '.flac']
+  for l:ext in ['.mp3', '.m4a', '.avi', '.m4k', '.m4v', '.mp4', '.avi', '.flac', '.aac']
     let l:mp3file = substitute( a:lrcfile, '[.]\w\+$', l:ext,'')
     if filereadable(l:mp3file)
       let l:mp3file = fnamemodify(l:mp3file, ':p')

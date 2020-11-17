@@ -3,7 +3,7 @@
 # telnet.pl from perlmonks, modified to work with vlc remote control.
 # see https://wiki.videolan.org/Talk:Console/ vlc command line commands
 # GPL(C) moshahmed at gmail 2013-08-22
-# $Id: vlc.pl,v 1.7 2020/11/15 18:20:42 User Exp $
+# $Id: vlc.pl,v 1.8 2020/11/17 16:00:24 User Exp $
 use strict;
 use IO::Socket;
 
@@ -61,7 +61,7 @@ $handle = IO::Socket::INET->new(
     PeerAddr => $host,
     PeerPort => $port,
     ReuseAddr => 1 # To test.
-  ) or die "can't connect to port $port on $host: $!";
+  ) or die "cannot connect to $host:$port $!\n";
   $handle->autoflush(1);    # so output gets there right away
 print STDERR "[Connected to $host:$port]\n" if $verbose;
 
@@ -137,4 +137,4 @@ sub hms_to_seconds {
       return $1 * 60 + $2;
     }
     return $hms;
-}
+} 
