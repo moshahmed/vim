@@ -6,7 +6,7 @@
 "   1. start c:/view/vlc/vlc.exe
 "   2. VLC setup: $ vlc > tools > prefs > show settings all >
 "                    > main interface > Enable telnet checkbox > RC > enable RC (Remote Control),
-"       Tcp-command-Input=[localhost:2150]  .. ~/sound/vlc.pl will open this socket.
+"       Tcp-command-Input=[localhost:2150]  .. ~/mvim/vlc.pl will open this socket.
 "       check [donot_open console]
 "   3. VIM Setup:
 "     c:\> start c:/view/vlc/vlc.exe
@@ -15,7 +15,6 @@
 "          :so %
 "          :sp ~/sound/mallige.lrc
 "          [F5] on mallige.mp3 to play it.
-"     and cline is '[0:23.10] file:///C:/mosh/sound/mallige.mp3' .. press F5 to play from 23s
 "     and cline is '[0:33.10]             ../sound/mallige.mp3'  .. press F5 to play from 23s
 "
 "   +------------------------------+----------------------------------------+
@@ -24,7 +23,7 @@
 "   | [F12] Start vlc on [cfile]   | [F9]  Get filename:time into/from vlc. |
 "   | [F2] Play                    | [F10] Get file from vlc into cline.    |
 "   | [F3] Stop                    | [F11] Get Time from vlc into cline.    |
-"   | [F4] Pause toggle            |                                        |
+"   | [F4] Pause toggle            | [F1]  This help                        |
 "   | [F5] Play [cfile][timestamp] | [C-F12] Kill vlc                       |
 "   +------------------------------+----------------------------------------+
 "
@@ -34,7 +33,7 @@
 "     vlc2.1.3, gvim74, cygwin-perl-5.22 on Windows-7
 "     vlc2,     gvim73, cygwin-perl-5.14 on XP-PRO-SP4
 " Testing:
-"     To debug: change 'perl ~/sound/vlc.pl' to 'vimrun perl ~/sound/vlc.pl -debug'
+"     To debug: change 'perl ~/mvim/vlc.pl' to 'vimrun perl ~/mvim/vlc.pl -debug'
 "     0. :so %
 "        :!start c:/view/vlc/vlc.exe
 "        :e ~/sound/mallige.lrc
@@ -48,9 +47,10 @@
 "     o Test on Linux
 " ==============================================================================
 
-nmap <F2>   :call system("perl ~/sound/vlc.pl -cmd=play")<CR>
-nmap <F3>   :call system("perl ~/sound/vlc.pl -cmd=stop")<CR>
-nmap <F4>   :call system("perl ~/sound/vlc.pl -cmd=pause")<CR>
+nmap <F1>   :call Vlc_Lrc_Help()<CR>
+nmap <F2>   :call system("perl ~/mvim/vlc.pl -cmd=play")<CR>
+nmap <F3>   :call system("perl ~/mvim/vlc.pl -cmd=stop")<CR>
+nmap <F4>   :call system("perl ~/mvim/vlc.pl -cmd=pause")<CR>
 nmap <F5>   :call Vlc_Set_File_Time()<CR>
 
 nmap <F9>   :call Vlc_Get_File_And_Time()<CR>
@@ -63,6 +63,13 @@ nmap <M-Right> :call Vlc_Seek_Delta(10)<CR>
 nmap <M-Left>  :call Vlc_Seek_Delta(-10)<CR>
 
 " ==============================================================================
+function! Vlc_Lrc_Help()
+  echo "   | [F12] Start vlc on [cfile]   | [F9]  Get filename:time into/from vlc. |"
+  echo "   | [F2] Play                    | [F10] Get file from vlc into cline.    |"
+  echo "   | [F3] Stop                    | [F11] Get Time from vlc into cline.    |"
+  echo "   | [F4] Pause toggle            | [F1]  This help.                       |"
+  echo "   | [F5] Play [cfile][timestamp] | [C-F12] Kill vlc.                      |"
+endfunc
 
 function! Vlc_Get_File_And_Time()
   :call Vlc_Get_Filename()
@@ -83,27 +90,27 @@ function! Vlc_Set_File_Time()
   " let l:lrcmedia = substitute(expand("%"), '[.]\w\+$', '.mp3','')
 
   if len(l:matcher_file) > 4 && filereadable(l:matcher_file[1])
-    :echom      ("perl ~/sound/vlc.pl -cmd=set_file=" . l:matcher_file[1])
-    :call system("perl ~/sound/vlc.pl -cmd=set_file=" . l:matcher_file[1])
+    :echom      ("perl ~/mvim/vlc.pl -cmd=set_file=" . l:matcher_file[1])
+    :call system("perl ~/mvim/vlc.pl -cmd=set_file=" . l:matcher_file[1])
   elseif  filereadable(l:cfile)
-    :echom       "perl ~/sound/vlc.pl -cmd=set_file=file:///".l:cfile
-    :call system("perl ~/sound/vlc.pl -cmd=set_file=file:///".l:cfile)
+    :echom       "perl ~/mvim/vlc.pl -cmd=set_file=file:///".l:cfile
+    :call system("perl ~/mvim/vlc.pl -cmd=set_file=file:///".l:cfile)
   elseif len(l:matcher_time_bracketed) > 0
-    :echom      ("perl ~/sound/vlc.pl -cmd=set_time=" . l:matcher_time_bracketed[1])
-    :call system("perl ~/sound/vlc.pl -cmd=set_time=" . l:matcher_time_bracketed[1])
+    :echom      ("perl ~/mvim/vlc.pl -cmd=set_time=" . l:matcher_time_bracketed[1])
+    :call system("perl ~/mvim/vlc.pl -cmd=set_time=" . l:matcher_time_bracketed[1])
   elseif len(l:matcher_time_digited) > 0
-    :echom      ("perl ~/sound/vlc.pl -cmd=set_time=" . l:matcher_time_digited[1])
-    :call system("perl ~/sound/vlc.pl -cmd=set_time=" . l:matcher_time_digited[1])
+    :echom      ("perl ~/mvim/vlc.pl -cmd=set_time=" . l:matcher_time_digited[1])
+    :call system("perl ~/mvim/vlc.pl -cmd=set_time=" . l:matcher_time_digited[1])
   else
     :let l:lrcmedia = Vlc_Find_Lrc_Media( expand('%') )
-    :echom       "perl ~/sound/vlc.pl -cmd=set_file=file:///".l:lrcmedia
-    :call system("perl ~/sound/vlc.pl -cmd=set_file=file:///".l:lrcmedia)
+    :echom       "perl ~/mvim/vlc.pl -cmd=set_file=file:///".l:lrcmedia
+    :call system("perl ~/mvim/vlc.pl -cmd=set_file=file:///".l:lrcmedia)
   endif
 endfunction
 
 " ==============================================================================
 function! Vlc_Get_Filename()
-  let l:fileis=system("perl ~/sound/vlc.pl -cmd=get_file")
+  let l:fileis=system("perl ~/mvim/vlc.pl -cmd=get_file")
     if len(l:fileis) < 1 || l:fileis =~ "connection refused"
       echom 'Error Vlc_Get_Filename:'.l:fileis
       return
@@ -125,7 +132,7 @@ endfunction
 " ==============================================================================
 function! Vlc_Get_Time()
     " Get current file time from vlc and insert into current line eg. [2:20]
-    let l:timeis=system("perl ~/sound/vlc.pl -cmd=get_time")
+    let l:timeis=system("perl ~/mvim/vlc.pl -cmd=get_time")
     if len(l:timeis) < 1 || l:timeis =~ "connection refused"
       echom 'Error Vlc_Get_Time:'.l:timeis
       return
@@ -138,7 +145,7 @@ endfunction
 " ==============================================================================
 function! Vlc_Seek_Delta(delta)
     " Get current file time from vlc.
-    let l:timeis=system("perl ~/sound/vlc.pl -cmd=get_time")
+    let l:timeis=system("perl ~/mvim/vlc.pl -cmd=get_time")
     if  len(l:timeis) < 1
       echoerr "Vlc_Seek_Delta no time, need h:m:s?"
     endif
@@ -160,27 +167,16 @@ function! Vlc_Seek_Delta(delta)
 
     " Add delta
     let l:seekto = l:secondsis + a:delta
-    :echom      ("perl ~/sound/vlc.pl -cmd=set_time=" . l:seekto)
-    :call system("perl ~/sound/vlc.pl -cmd=set_time=" . l:seekto)
+    :echom      ("perl ~/mvim/vlc.pl -cmd=set_time=" . l:seekto)
+    :call system("perl ~/mvim/vlc.pl -cmd=set_time=" . l:seekto)
 endfunction
 
 " ==============================================================================
-function! Vlc_Play_File(mediafile)
-
-    " Find a media file: given, under cursor, current filename.
-    if a:mediafile != '' && filereadable(a:mediafile)
-      let l:cfile = a:mediafile
-    else
-      let l:cfile = expand("<cfile>:p")
-      if !filereadable(l:cfile)
-        let l:cfile=expand('%')
-      endif
-    endif
-
+function! Vlc_Play_File(infile)
     " Convert file.lrc to media file.mp3
-    let l:cfile = Vlc_Find_Lrc_Media(l:cfile)
+    let l:cfile = Vlc_Find_Lrc_Media(a:infile)
     if l:cfile == '' || !filereadable(l:cfile)
-      echoerr "No mediafile ".l:cfile
+      echom "No media file to play?"
       return
     endif
 
@@ -195,17 +191,32 @@ function! Vlc_Play_File(mediafile)
     :exe '!start /B c:/view/vlc/vlc '.l:cfile
 endfunction
 
-function! Vlc_Find_Lrc_Media(lrcfile)
-  " Input:   mallige.lrc
-  " Returns: mallige.mp3
-  for l:ext in ['.mp3', '.m4a', '.avi', '.m4k', '.m4v', '.mp4', '.avi', '.flac', '.aac']
-    let l:mp3file = substitute( a:lrcfile, '[.]\w\+$', l:ext,'')
+function! Vlc_Find_Lrc_Media(infile)
+  " Input:   mallige.lrc or cursor on mallige.txt or while editing mallige.txt
+  " Returns: mallige.mp3 to play with vlc
+  " No error if file not found.
+
+  " Find a media file: given, under cursor, current filename.
+  if a:infile != '' && filereadable(a:infile)
+    let l:cfile = a:infile
+  else
+    let l:cfile = expand("<cfile>:p")
+    if !filereadable(l:cfile)
+      let l:cfile=expand('%')
+    endif
+  endif
+
+  " Convert cfile to mp3file
+  for l:ext in ['.mp3', '.m4a', '.avi', '.m4k', '.m4v', '.mkv', '.mp4', '.avi', '.flac', '.aac']
+    let l:mp3file = substitute( l:cfile, '[.]\w\+$', l:ext,'')
     if filereadable(l:mp3file)
       let l:mp3file = fnamemodify(l:mp3file, ':p')
       echom("Found ".l:mp3file)
       return l:mp3file
     endif
   endfor
+
   return ''
+
 endfun
-" ==============================================================================
+

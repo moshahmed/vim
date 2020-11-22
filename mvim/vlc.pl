@@ -3,7 +3,7 @@
 # telnet.pl from perlmonks, modified to work with vlc remote control.
 # see https://wiki.videolan.org/Talk:Console/ vlc command line commands
 # GPL(C) moshahmed at gmail 2013-08-22
-# $Id: vlc.pl,v 1.8 2020/11/17 16:00:24 User Exp $
+# $Id: vlc.pl,v 1.1 2020/11/21 12:01:29 User Exp $
 use strict;
 use IO::Socket;
 
@@ -30,7 +30,7 @@ Examples:
     start c:/view/vlc/vlc.exe
     perl $0 -cmd=set_file:///c:/mosh/sound/mallige.mp3
     perl $0 -cmd=set_time=0:12      .. cue vlc to 12seconds
-    vi   +":so ~/sound/vlc.vim" ~/sound/mallige.lrc
+    vi   +":so ~/mvim/vlc.vim" ~/sound/mallige.lrc
       F2/F3/F4 .. Play/Stop/Pause
       F5       .. Play file:time from cline into vlc
       F9       .. Get file:time from vlc onto cline
